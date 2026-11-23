@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q-UP英語塾 英検2級リスニング（無料版）</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<meta name="theme-color" content="#1e3a5f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+:root{
+  --main:#1e3a5f; --main2:#2f5d8f; --soft:#eaf1f8; --acc:#f28c28; --acc2:#ffe3c4;
+  --ink:#22303c; --sub:#5b6b78; --bg:#f6f8fb; --card:#fff; --line:#d6e0ea;
+  --ok:#1f9d55; --ng:#d64545; --m:#2f5d8f; --w:#b5477d;
+}
+*{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans CJK JP','Yu Gothic',Meiryo,sans-serif; background:var(--bg); color:var(--ink); min-height:100vh; line-height:1.6;}
+.en{font-family:Arial,Helvetica,sans-serif;}
+.hidden{display:none !important;}
+
+/* ---- ヘッダー（どの画面でも上に残る） ---- */
+header{position:sticky; top:0; z-index:50; background:var(--main); color:#fff; box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.hd{max-width:680px; margin:0 auto; display:flex; align-items:center; gap:8px; padding:8px 12px;}
+.hd .face{width:36px; height:36px; border-radius:50%; object-fit:cover; border:2px solid #fff; flex:0 0 auto;}
+.hd .ttl{flex:1; min-width:0;}
+.hd .t1{font-size:11px; opacity:.85; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.hd .t2{font-size:15px; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.hbtn{flex:0 0 auto; border:1.5px solid rgba(255,255,255,.55); background:rgba(255,255,255,.12); color:#fff; border-radius:8px; padding:7px 9px; font-size:13px; font-weight:bold; cursor:pointer;}
+.hbtn:active{background:rgba(255,255,255,.3);}
+.prog{height:4px; background:rgba(255,255,255,.2);}
+.prog-fill{height:100%; width:0; background:var(--acc); transition:width .3s;}
+
+.wrap{max-width:680px; margin:0 auto; padding:14px 12px 120px;}
+.card{background:var(--card); border-radius:14px; padding:16px; box-shadow:0 2px 10px rgba(30,58,95,.08); margin-bottom:14px;}
+.btn{display:block; width:100%; padding:13px 14px; border:none; border-radius:10px; font-size:15.5px; font-weight:bold; cursor:pointer; background:var(--main); color:#fff; text-align:center;}
+.btn:active{transform:scale(.985);}
+.btn.acc{background:var(--acc);}
+.btn.ghost{background:var(--soft); color:var(--main);}
+.btn.sm{padding:10px 12px; font-size:14px;}
+.btn:disabled{opacity:.45; cursor:default;}
+.btnrow{display:flex; gap:8px; margin-top:12px;}
+.btnrow .btn{flex:1;}
+
+/* ---- スタート ---- */
+.hello{display:flex; gap:12px; align-items:flex-start; margin-bottom:12px;}
+.hello img{width:64px; height:64px; border-radius:50%; object-fit:cover; flex:0 0 auto;}
+.hello .say{background:var(--soft); border-radius:12px; padding:9px 12px; font-size:14px;}
+.ai-note{font-size:10.5px; color:#8a99a6; margin-top:4px;}
+.howto{border:1.5px solid var(--line); border-radius:10px; padding:9px 12px; font-size:13.5px; margin-bottom:14px; list-style:none;}
+.howto li{padding:2px 0;}
+.howto b{color:var(--main);}
+.howto .arrow{color:var(--acc); font-weight:bold;}
+.partbtn{display:flex; flex-direction:column; align-items:flex-start; gap:1px; text-align:left; margin-bottom:10px;}
+.partbtn small{font-weight:normal; font-size:12px; opacity:.9;}
+.partbtn.p2{background:var(--main2);}
+.partbtn.all{background:#3c4f63;}
+.partbtn.lockedbtn{opacity:.7;}
+.planbox{border-radius:10px; padding:10px 12px; font-size:13px; margin-bottom:12px;}
+.planbox.trial{background:#fff4e6; border:1.5px solid #f2b26b; color:#7a4100;}
+.planbox.full{background:#e9f7ef; border:1.5px solid #8fd1ad; color:#145c36;}
+
+/* ---- 問題ピッカー ---- */
+.picker-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin:10px 0 14px;}
+.pickbtn{padding:12px 0; border:2px solid var(--line); border-radius:10px; background:#fff; font-size:15px; font-weight:bold; cursor:pointer; color:var(--ink);}
+.pickbtn:active{border-color:var(--main);}
+.pickbtn.locked{background:#f1f4f7; color:#9aa7b2; border-style:dashed;}
+.pickbtn.done-ok{border-color:var(--ok);}
+.sub{font-size:12.5px; color:var(--sub);}
+
+/* ---- 問題ブロック（下へ積み上がる） ---- */
+.qblock{background:var(--card); border-radius:14px; box-shadow:0 2px 10px rgba(30,58,95,.08); margin-bottom:14px; scroll-margin-top:64px; overflow:hidden;}
+.qhead{display:flex; align-items:center; gap:8px; padding:10px 14px; background:var(--soft); border-bottom:1px solid var(--line);}
+.qhead .qno{font-weight:bold; color:var(--main); font-size:15px;}
+.qhead .scene{font-size:12.5px; color:var(--sub); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.qhead .qmark{font-size:16px;}
+.qhead .pts{font-size:12px; color:var(--sub); white-space:nowrap;}
+.qblock.done .qhead{cursor:pointer;}
+.qblock.done .qhead::after{content:"▼ ひらく"; font-size:11.5px; color:var(--main2); white-space:nowrap;}
+.qblock.done.open .qhead::after{content:"▲ とじる";}
+.qblock.done:not(.open) .qbody{display:none;}
+.qbody{padding:14px;}
+.step{scroll-margin-top:64px;}
+.step + .step{margin-top:18px; padding-top:16px; border-top:2px solid var(--soft);}
+.stephead{font-size:15.5px; font-weight:bold; color:var(--main); margin-bottom:6px;}
+.hint{font-size:12.5px; color:var(--sub); margin-bottom:8px;}
+
+.choices{display:flex; flex-direction:column; gap:7px;}
+.choice{display:flex; gap:8px; align-items:flex-start; padding:11px 12px; border:2px solid var(--line); border-radius:10px; background:#fff; font-size:14.5px; text-align:left; cursor:pointer; width:100%; color:var(--ink);}
+.choice .no{font-weight:bold; color:var(--main2); flex:0 0 auto;}
+.choice:disabled{cursor:default;}
+.choice.giveup{border-style:dashed; color:var(--sub); font-size:13px; justify-content:center;}
+.choice.is-ok{border-color:var(--ok); background:#e9f7ef;}
+.choice.is-ng{border-color:var(--ng); background:#fdeeee;}
+.choice .tag{margin-left:auto; font-size:11.5px; font-weight:bold; white-space:nowrap; padding-top:2px;}
+.choice.is-ok .tag{color:var(--ok);} .choice.is-ng .tag{color:var(--ng);}
+.playbtn{display:block; width:100%; margin-top:12px; padding:14px; border:none; border-radius:12px; background:var(--main); color:#fff; font-size:16.5px; font-weight:bold; cursor:pointer;}
+.playbtn:disabled{opacity:.55;}
+.audiowarn{background:#fdeeee; border:1.5px solid var(--ng); color:#8f2727; border-radius:10px; padding:9px 11px; font-size:12.5px; margin-top:10px;}
+.timerwrap{height:9px; background:#e3eaf1; border-radius:6px; overflow:hidden; margin:12px 0 3px;}
+.timerbar{height:100%; width:100%; background:var(--acc); transition:width .1s linear;}
+.timertext{font-size:12px; color:var(--sub); text-align:center;}
+.answered-line{font-size:13.5px; padding:8px 10px; background:var(--soft); border-radius:8px;}
+
+.verdict{font-size:19px; font-weight:bold; margin-bottom:10px;}
+.verdict.ok{color:var(--ok);} .verdict.ng{color:var(--ng);}
+.qbox{border:2px solid var(--main); border-radius:12px; padding:12px; margin-bottom:12px;}
+.qbox .qlabel{font-size:12px; font-weight:bold; color:var(--main); margin-bottom:2px;}
+.qbox .qline{display:flex; gap:8px; align-items:flex-start; margin-bottom:10px;}
+.qbox .qtext{flex:1; font-size:15.5px; font-weight:bold;}
+.sbtn{flex:0 0 auto; border:none; border-radius:50%; width:36px; height:36px; background:var(--main2); color:#fff; font-size:14px; cursor:pointer;}
+.sbtn.playing{background:var(--acc);}
+.sbtn:active{transform:scale(.94);}
+.qsound{display:inline-flex; align-items:center; gap:6px; border:1.5px solid var(--main2); background:#fff; color:var(--main2); border-radius:8px; padding:6px 10px; font-size:13px; font-weight:bold; cursor:pointer; flex:0 0 auto;}
+.qsound.playing{background:var(--acc); border-color:var(--acc); color:#fff;}
+.note{border-radius:10px; padding:10px 12px; font-size:13.5px; margin:10px 0;}
+.note .nh{font-weight:bold; margin-bottom:2px;}
+.note.trap{background:#fdf1f1; border-left:4px solid var(--ng);}
+.note.trap .nh{color:var(--ng);}
+.note.key{background:#fff6ea; border-left:4px solid var(--acc);}
+.note.key .nh{color:#a35a00;}
+.linkbtn{background:none; border:none; color:var(--main2); text-decoration:underline; font-size:13px; cursor:pointer; padding:0; margin-top:4px;}
+
+.scripthead{display:flex; align-items:center; gap:8px; margin:14px 0 6px; flex-wrap:wrap;}
+.scripthead .stephead{margin:0; flex:1;}
+.fullbtn{border:none; border-radius:8px; background:var(--main2); color:#fff; padding:8px 12px; font-size:13px; font-weight:bold; cursor:pointer;}
+.fullbtn.playing{background:var(--acc);}
+.legend{display:flex; flex-wrap:wrap; gap:10px; font-size:11.5px; color:var(--sub); margin-bottom:6px;}
+.units{list-style:none;}
+.unit{display:flex; gap:8px; align-items:flex-start; padding:9px 0; border-top:1px dashed var(--line);}
+.unit:first-child{border-top:none;}
+.unit .body{flex:1; min-width:0;}
+.unit .who{display:inline-block; font-size:11px; font-weight:bold; color:#fff; border-radius:5px; padding:1px 6px; margin-right:6px; vertical-align:1px;}
+.who.m{background:var(--m);} .who.w{background:var(--w);} .who.n{background:#5b6b78;} .who.q{background:var(--acc);}
+.unit .ord{font-weight:bold; color:var(--main); margin-right:4px;}
+.unit .txt{font-size:14.5px; line-height:1.75;}
+.unit.qunit .txt{font-weight:bold;}
+mark{background:none; color:inherit; font-weight:bold; padding:0 1px; border-bottom:2.5px solid;}
+mark.k-link{border-color:#d64545; background:rgba(214,69,69,.10);}
+mark.k-shift{border-color:#1f9d55; background:rgba(31,157,85,.12);}
+mark.k-vocab{border-color:#6b4fbb; background:rgba(107,79,187,.10);}
+.sw{display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:3px; vertical-align:-1px;}
+.sw.k-link{background:#d64545;} .sw.k-shift{background:#1f9d55;} .sw.k-vocab{background:#6b4fbb;}
+.unotes{list-style:none; margin-top:4px;}
+.unotes li{font-size:12.5px; color:#3d4b57; padding-left:2px;}
+.unotes .kl{font-weight:bold;}
+.unotes .k-link .kl{color:#d64545;} .unotes .k-shift .kl{color:#1f9d55;} .unotes .k-vocab .kl{color:#6b4fbb;}
+
+/* シャドーイング */
+.ctrls{display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; margin:6px 0 10px; font-size:13px;}
+.segctl{display:flex; align-items:center; gap:4px;}
+.segctl > span{color:var(--sub); margin-right:2px;}
+.segctl button{border:1.5px solid var(--line); background:#fff; color:var(--ink); border-radius:7px; padding:5px 9px; font-size:13px; cursor:pointer;}
+.segctl button.on{background:var(--main); border-color:var(--main); color:#fff; font-weight:bold;}
+.hidetxt{display:flex; align-items:center; gap:5px; cursor:pointer;}
+.shadow.masked .unit .say{filter:blur(5px); user-select:none; cursor:pointer;}
+.shadow.masked .unit .say.peek{filter:none;}
+.shstatus{font-size:12.5px; color:var(--acc); font-weight:bold; min-height:1.4em; margin-top:6px;}
+
+/* 結果 */
+.result-label{text-align:center; font-size:21px; font-weight:bold; margin:4px 0;}
+.result-label.pass{color:var(--ok);} .result-label.sclass{color:#b8860b;} .result-label.fail{color:var(--sub);}
+.result-score{text-align:center;}
+.result-score .big{font-size:42px; font-weight:bold; color:var(--main);}
+.passline{position:relative; height:12px; background:#e3eaf1; border-radius:6px; margin:26px 0 28px;}
+.passline .fill{height:100%; border-radius:6px; background:var(--main2); transition:width 1s ease;}
+.passline .mark{position:absolute; top:-4px; width:2.5px; height:20px; background:#8a5a00;}
+.passline .mlabel{position:absolute; top:22px; font-size:10.5px; color:#8a5a00; transform:translateX(-50%); white-space:nowrap;}
+.wrong-item{background:#fdf6f6; border-radius:10px; padding:10px 12px; font-size:13px; margin-top:8px;}
+
+/* 虎の巻シート・確認・トースト・案内 */
+.sheet{position:fixed; inset:0; z-index:200; background:rgba(15,23,42,.5); display:flex; justify-content:center; align-items:flex-end;}
+.sheet .panel{background:#fff; width:100%; max-width:720px; height:92vh; height:92dvh; max-height:calc(100% - 12px); border-radius:16px 16px 0 0; display:flex; flex-direction:column;}
+.sheet .bar{display:flex; align-items:center; gap:8px; padding:10px 12px; border-bottom:1px solid var(--line);}
+.sheet .bar .t{flex:1; font-weight:bold; color:var(--main);}
+.sheet .bar a, .sheet .bar button{font-size:13px; font-weight:bold; border-radius:8px; padding:7px 10px; cursor:pointer; text-decoration:none;}
+.sheet .bar a{background:var(--soft); color:var(--main); border:1.5px solid var(--line);}
+.sheet .bar button{background:var(--main); color:#fff; border:none;}
+.sheet .scroll{overflow-y:auto; padding:14px 16px 40px; -webkit-overflow-scrolling:touch; font-size:13.5px; line-height:1.75;}
+#ask{position:fixed; inset:0; z-index:300; background:rgba(15,23,42,.5); display:flex; align-items:center; justify-content:center; padding:18px;}
+#ask .box{background:#fff; border-radius:14px; padding:18px; max-width:360px; width:100%;}
+#toast{position:fixed; left:50%; bottom:22px; transform:translateX(-50%); z-index:400; background:#22303c; color:#fff; font-size:13px; padding:10px 14px; border-radius:10px; max-width:92vw; box-shadow:0 4px 14px rgba(0,0,0,.25);}
+#upsell{position:fixed; inset:0; background:rgba(15,23,42,.55); display:flex; align-items:center; justify-content:center; z-index:250; padding:18px;}
+#upsell .box{background:#fff; border-radius:16px; max-width:380px; width:100%; padding:20px; text-align:center;}
+#upsell img{width:80px; height:80px; border-radius:50%; object-fit:cover;}
+#upsell h3{font-size:18px; margin:10px 0 8px; color:var(--main);}
+#upsell ul{text-align:left; font-size:13.5px; line-height:1.9; margin:8px 0 14px; padding-left:20px;}
+footer{text-align:center; font-size:11px; color:#8a99a6; padding:0 16px 30px; line-height:1.7;}
+.confetti{position:fixed; top:-16px; width:9px; height:13px; z-index:999; pointer-events:none;}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);}}
+/* ===== 使い方の案内（チュートリアル）2026-11-21 ===== */
+#help-btn{padding:7px 8px;}
+@media (max-width:420px){ .hd{gap:5px; padding:8px 8px;} .hbtn{padding:6px 6px; font-size:12px;} #help-btn{padding:6px 5px;} }
+.qblock *{scroll-margin-top:74px;}
+.tutbtn{background:#fff7ed; color:#9a3412; border:2px dashed #f28c28; margin-bottom:12px; font-size:15px;}
+.tutbtn small{display:block; font-weight:normal; font-size:12px; color:#9a3412; opacity:.85;}
+#coach{position:fixed; inset:0; z-index:190; pointer-events:none;}
+#coach.hidden{display:none;}
+#coach .blk{position:fixed; background:rgba(15,23,42,.58); pointer-events:auto;}
+#coach .ring{position:fixed; border:3px solid #f28c28; border-radius:12px; pointer-events:none; box-shadow:0 0 0 4px rgba(242,140,40,.35); animation:ring 1.2s ease-in-out infinite;}
+@keyframes ring{50%{box-shadow:0 0 0 9px rgba(242,140,40,.15);}}
+#coach .bub{position:fixed; left:10px; right:10px; max-width:560px; margin:0 auto; background:#fff; border-radius:14px; padding:12px 12px 10px; pointer-events:auto; box-shadow:0 8px 28px rgba(0,0,0,.35); display:flex; gap:10px; align-items:flex-start;}
+#coach .bub img{width:44px; height:44px; border-radius:50%; object-fit:cover; flex:0 0 auto;}
+#coach .bub .bt{flex:1; min-width:0;}
+#coach .bub .step{font-size:11px; color:var(--sub); font-weight:bold;}
+#coach .bub .msg{font-size:14.5px; line-height:1.65; margin:2px 0 8px;}
+#coach .bub .msg b{color:#c2410c;}
+#coach .bub .do{display:inline-block; background:#fff7ed; color:#c2410c; border-radius:6px; padding:1px 6px; font-size:12.5px; font-weight:bold; margin-bottom:6px;}
+#coach .bub .row{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+#coach .bub .row .btn{width:auto; padding:8px 14px; font-size:14px; margin:0;}
+#coach .bub .quit{margin-left:auto; background:none; border:none; color:#8a99a6; font-size:12px; text-decoration:underline; cursor:pointer; padding:4px;}
+#coach .bub.shake{animation:shake .35s;}
+@media (max-height:520px){ #coach .bub{padding:7px 10px 6px; max-width:620px;} #coach .bub img{width:30px; height:30px;} #coach .bub .msg{font-size:13px; line-height:1.45; margin:0 0 4px;} #coach .bub .row .btn{padding:5px 12px; font-size:13px;} }
+body.tut-on #toast{bottom:auto; top:66px;}
+#coach .bub.mini{padding:6px 10px; align-items:center; border-radius:999px;}
+#coach .bub.mini img, #coach .bub.mini .step, #coach .bub.mini .quit{display:none;}
+#coach .bub.mini .bt{display:flex; align-items:center; gap:8px;}
+#coach .bub.mini .msg{margin:0; font-size:13.5px; flex:1;}
+#toast{pointer-events:none;} /* 知らせだけ。下のボタンを押せなくしない（2026-11-21 見直しで判明） */
+@keyframes shake{25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+
+
+.tora-doc h1{font-size:20px; color:#1e3a5f; margin:0 0 2px;}
+.tora-doc .by{font-size:12px; color:#5b6b78; margin-bottom:6px;}
+.tora-doc .draft{font-size:11.5px; background:#fff1e0; border:1px solid #f2b26b; color:#7a4100; border-radius:8px; padding:4px 9px; display:inline-block; margin-bottom:10px;}
+.tora-doc h2{font-size:15.5px; color:#fff; background:#1e3a5f; border-radius:6px; padding:4px 10px; margin:16px 0 8px; break-after:avoid;}
+.tora-doc h3{font-size:14px; color:#1e3a5f; margin:10px 0 4px; border-left:4px solid #f28c28; padding-left:7px;}
+.tora-doc p{margin:4px 0;}
+.tora-doc ul,.tora-doc ol{margin:4px 0 6px; padding-left:22px;}
+.tora-doc li{margin:2px 0;}
+.tora-doc b{color:#b4530a;}
+.tora-doc .en{font-family:Arial,Helvetica,sans-serif;}
+.tora-doc table{border-collapse:collapse; width:100%; margin:6px 0; font-size:13px;}
+.tora-doc th,.tora-doc td{border:1px solid #c9d6e2; padding:5px 8px; text-align:left; vertical-align:top;}
+.tora-doc th{background:#eaf1f8; color:#1e3a5f; white-space:nowrap;}
+.tora-doc .box{border:1.5px solid #1e3a5f; border-radius:8px; padding:8px 12px; margin:8px 0; break-inside:avoid;}
+
+
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <img class="face" src="ellie-face.jpg" alt="エリー先生">
+    <div class="ttl"><div class="t1">Q-UP英語塾｜エリー先生</div><div class="t2">英検2級 リスニング</div></div>
+    <button class="hbtn" id="help-btn" type="button" aria-label="使い方の案内">❓</button>
+    <button class="hbtn" id="tora-btn" type="button">📜 虎の巻</button>
+    <button class="hbtn" id="home-btn" type="button" aria-label="ホームにもどる">🏠</button>
+  </div>
+  <div class="prog hidden" id="prog"><div class="prog-fill" id="prog-fill"></div></div>
+</header>
+
+<div class="wrap">
+  <!-- スタート -->
+  <section id="start-view">
+    <div class="card">
+      <div class="planbox full">🎁 <b>第1回は無料</b>で全部の問題が解けます。<br>📱 スマホの「ホーム画面に追加」でアプリのように使えます。</div>
+      <div class="hello">
+        <img src="ellie-face.jpg" alt="エリー先生">
+        <div>
+          <div class="say">Hi! エリーです。<br>聞いて答えたら、解説とシャドーイングで仕上げよう！</div>
+          <div class="ai-note">※エリー先生はAIで作ったキャラクターです</div>
+        </div>
+      </div>
+      <ol class="howto">
+        <li>🎧 選択肢を先に読んで、▶ <b>1回だけ</b>聞いて答える</li>
+        <li>📖 <b>解説</b>：質問・選択肢と、流れた順のスクリプト</li>
+        <li>🗣 <b>シャドーイング</b>で練習（何回でも・好きな文から）</li>
+      </ol>
+      <button class="btn tutbtn" id="tut-start" type="button">🔰 はじめての人：1問いっしょにやってみる（2分）<small>エリー先生が、押す所を1つずつ案内します</small></button>
+      <button class="btn partbtn" data-part="1" type="button">第1部（No.1〜15）会話<small>番号を選んで、好きな問題から始められます</small></button>
+      <button class="btn partbtn p2" data-part="2" type="button">第2部（No.16〜30）説明文<small>番号を選んで、好きな問題から始められます</small></button>
+      <button class="btn partbtn all" data-part="all" type="button">30問を通しで解く（本番モード）<small>解説なしで採点だけ。解説とシャドーイングは結果から開けます</small></button>
+    </div>
+  </section>
+
+  <!-- 問題ピッカー -->
+  <section id="picker-view" class="hidden">
+    <div class="card">
+      <div style="font-weight:bold; font-size:17px; color:var(--main);" id="picker-title"></div>
+      <div class="sub" style="margin-top:4px;">番号をタップすると、その問題から順に進みます。</div>
+      <div class="picker-grid" id="picker-grid"></div>
+      <button class="btn" id="picker-all-btn" type="button">最初から順番に解く</button>
+      <button class="btn ghost" id="picker-back-btn" type="button" style="margin-top:10px;">← もどる</button>
+    </div>
+  </section>
+
+  <!-- 問題・解説・シャドーイング・結果がここに下へ積み上がる -->
+  <div id="feed" class="hidden"></div>
+</div>
+
+<!-- 虎の巻（いつでも開ける） -->
+<div id="tora-sheet" class="sheet hidden" role="dialog" aria-label="虎の巻">
+  <div class="panel">
+    <div class="bar">
+      <div class="t">📜 虎の巻</div>
+      <a href="tora.pdf" target="_blank" rel="noopener" id="tora-pdf">PDFで開く</a>
+      <button type="button" id="tora-close">✕ とじる</button>
+    </div>
+    <div class="scroll" id="tora-scroll">
+
+<div class="tora-doc">
+<h1>📜 英検2級リスニング 虎の巻</h1>
+<div class="by">Q-UP英語塾｜エリー先生</div>
+<div class="draft">仮の版です（中身はこれから仕上げます）</div>
+
+<h2>0. まず知っておくこと</h2>
+<ul>
+<li>第1部＝会話15問、第2部＝説明文15問。英文は<b>1回しか読まれない</b>。答える時間は<b>1問10秒</b>。</li>
+<li>だから差がつくのは「聞く前の準備」と「どこを聞くか」。</li>
+</ul>
+
+<h2>1. 聞く前：選択肢を先に読む</h2>
+<ul>
+<li>答えを塗ったら、すぐ<b>次の問題の選択肢</b>を読む。</li>
+<li>選択肢が<b>動詞で始まる</b> → 「何をするか（次の行動）」が問われる。人の名前・場所が並ぶ → それが問われる。</li>
+<li>4つに共通する言葉 → 話題の予想になる。</li>
+<li>迷っても10秒以内に塗って、次の先読みへ。1問を引きずらない。</li>
+</ul>
+
+<h2>2. 第1部（会話）</h2>
+<h3>最初の一言で「だれとだれが・どこで」</h3>
+<p><span class="en">Honey</span> → 夫婦、<span class="en">Dad / Mom</span> → 親子、<span class="en">Hello, ○○.</span> → お店・会社への電話。</p>
+<h3>質問の型（よく出る順）</h3>
+<table>
+<tr><th>質問</th><th>どこを聞く？</th></tr>
+<tr><td class="en">What is one thing we learn about ～?</td><td>話の中身と合うもの（言い換えに注意）</td></tr>
+<tr><td class="en">What is the man's / woman's problem?</td><td>その人が言った困りごと</td></tr>
+<tr><td class="en">What will ～ do (next / tomorrow)?</td><td><b>最後の</b> <span class="en">I'll ～ / Let's ～</span></td></tr>
+<tr><td class="en">Why ～?</td><td><span class="en">because / so</span> の前後</td></tr>
+<tr><td class="en">What does ～ want … to do?</td><td><span class="en">Can you ～ / Could you ～</span> の頼みごと</td></tr>
+</table>
+<h3>ひっかけの定番</h3>
+<ul>
+<li>不正解は<b>会話に出てきた単語</b>で作られる。「聞こえた単語＝正解」ではない。</li>
+<li>途中で出た案は<b>あとで覆る</b>（<span class="en">Should I ～?</span> → 「いや、～にしよう」）。最初の案は不正解に回される。</li>
+<li><span class="en">But / Actually / Instead</span> のあとに答えの根拠。</li>
+</ul>
+
+<h2>3. 第2部（説明文）</h2>
+<table>
+<tr><th>タイプ</th><th>聞くところ</th></tr>
+<tr><td>人物の話<br>（人名＋過去形）</td><td>最終的に何をしたか。<span class="en">At first</span> の案・ほかの人の提案は消す。<span class="en">However / In the end / Finally</span> のあとが核心。</td></tr>
+<tr><td>アナウンス<br>（<span class="en">Attention, … / Welcome to …</span>）</td><td>変更・例外・条件。数字が2つ出たら（前は～→今は～）ほぼ問われる。</td></tr>
+<tr><td>豆知識・科学</td><td>テーマ→問題→特徴・解決→補足。むずかしい語は直後に説明されるので、その説明を聞く。</td></tr>
+</table>
+<p>時間の言葉が2つ以上（<span class="en">used to / now / soon / last year</span>）出たら、「質問はどの時点？」を確かめる。</p>
+
+<h2>4. 音のつながり 5ルール</h2>
+<table>
+<tr><th>ルール</th><th>何が起きる</th><th>例</th></tr>
+<tr><td>つながる</td><td>子音＋母音がくっつく</td><td class="en">pick up → ピカップ</td></tr>
+<tr><td>ラ行になる</td><td>母音にはさまれた t がラ行に</td><td class="en">get up → ゲラップ</td></tr>
+<tr><td>消える</td><td>t・d がほとんど聞こえない</td><td class="en">last night → ラスナイ</td></tr>
+<tr><td>混ざる</td><td>t / d ＋ you → チュ・ヂュ</td><td class="en">Did you → ディヂュ</td></tr>
+<tr><td>弱くなる</td><td>to・the・him など軽い語が弱く</td><td class="en">want to → ワナ</td></tr>
+</table>
+
+<h2>5. 正解は「言い換え」で出る</h2>
+<ul>
+<li>正解の選択肢は、英文と<b>同じ言葉ではなく言い換え</b>。言葉ではなく<b>意味</b>で選ぶ。</li>
+<li>語の言い換え：<span class="en">buy → purchase</span>／まとめ：<span class="en">apples and bananas → some fruit</span>／言い方の言い換え：<span class="en">I'll call the shop tomorrow → Contact the store.</span></li>
+</ul>
+
+<h2>6. このアプリでの練習の3段階</h2>
+<div class="box">
+<ol>
+<li><b>ふつうに解く</b>（1回だけ聞いて、10秒で答える）</li>
+<li><b>解説</b>で「流れた順のスクリプト」を見ながら聞き直し、聞き取れなかった所を見つける</li>
+<li><b>「シャドーイングで練習」</b>で1文ずつまねして声に出す → 英文をかくしても言えるまで</li>
+</ol>
+</div>
+</div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ホームにもどる確認 -->
+<div id="ask" class="hidden">
+  <div class="box">
+    <div style="font-weight:bold; font-size:16px; margin-bottom:6px;">ホームにもどりますか？</div>
+    <div class="sub" style="margin-bottom:14px;">とちゅうの点数は消えます。</div>
+    <div class="btnrow"><button class="btn ghost" id="ask-no" type="button">つづける</button><button class="btn" id="ask-yes" type="button">もどる</button></div>
+  </div>
+</div>
+<div id="toast" class="hidden"></div>
+<!-- 使い方の案内（光っている所を押して進む） -->
+<div id="coach" class="hidden"><div class="blk"></div><div class="blk"></div><div class="blk"></div><div class="blk"></div><div class="ring"></div>
+  <div class="bub"><img src="ellie-face.jpg" alt=""><div class="bt"><div class="step"></div><div class="msg"></div><div class="row"></div></div></div></div>
+
+<footer>Q-UP英語塾 英検2級リスニング（無料版）｜英検2級の出題形式に合わせた演習アプリ<br>「英検」は公益財団法人 日本英語検定協会の登録商標です。このアプリは同協会とは関係ありません。<br>本アプリの英文・設問・音声はすべてオリジナルです（実際の検定問題ではありません）</footer>
+
+<script>
+"use strict";
+const TRIAL = false;
+const NOTE_URL = "";
+const ITEMS = [{"id": "q01", "part": 1, "audio": "audio/q01.mp3", "scene": "第1部・家庭菜園の虫よけ", "q": "What will the man probably do tomorrow?", "choices": ["Buy something to kill the bugs.", "Ask the woman's mother for advice.", "Buy some plants to protect the lettuce.", "Pick all the lettuce before it is eaten."], "ans": 2, "script": [{"sp": "W", "seg": [{"t": "Honey, "}, {"t": "something has", "sign": {"k": "link", "label": "something has", "note": "サムシンガズ（has が弱く h が落ちる）"}}, {"t": " been eating holes in our lettuce leaves."}]}, {"sp": "M", "seg": [{"t": "I saw that, too. Probably those little green bugs. Should I get something to kill them at the garden center?"}]}, {"sp": "W", "seg": [{"t": "I'd rather keep our garden "}, {"t": "organic", "sign": {"k": "vocab", "label": "organic", "note": "organic＝有機の・農薬を使わない"}}, {"t": ". My mother used to plant onions next to her vegetables to keep "}, {"t": "insects", "sign": {"k": "vocab", "label": "insects", "note": "insect＝昆虫"}}, {"t": " away."}]}, {"sp": "M", "seg": [{"t": "Good idea. I'll "}, {"t": "pick up", "sign": {"k": "link", "label": "pick up", "note": "ピカップ（k と u がつながる）"}}, {"t": " some onion plants on my way home tomorrow."}]}], "wana": "虫を殺す物を買うのは男性が最初に出した案ですが、女性に「畑は有機（organic）のままにしたい」と言われて消えた案です。lettuce や mother など聞こえた語だけで選ぶと引っかかります。", "tora": "虎の巻：次の行動は「最後の I'll ～」が決め手。途中で出て否定された案（Should I ～?）は不正解に回されると覚えておこう。"}, {"id": "q02", "part": 1, "audio": "audio/q02.mp3", "scene": "第1部・歯医者の予約の時間変更", "q": "What does the man want to do?", "choices": ["Change the time of his checkup.", "Cancel his meeting on Thursday.", "Come in on a different day.", "Find out the cost of a checkup."], "ans": 0, "script": [{"sp": "W", "seg": [{"t": "Good morning, Dr. Lane's dental office."}]}, {"sp": "M", "seg": [{"t": "Hi. I have an appointment for a "}, {"t": "checkup", "sign": {"k": "vocab", "label": "checkup", "note": "checkup＝健康診断・検診"}}, {"t": " at ten on Thursday morning."}]}, {"sp": "W", "seg": [{"t": "Yes, I see it here. "}, {"t": "What can I", "sign": {"k": "link", "label": "What can I", "note": "ワッキャナイ（t が落ち、can と I がつながる）"}}, {"t": " do for you?"}]}, {"sp": "M", "seg": [{"t": "Actually", "sign": {"k": "shift", "label": "Actually", "note": "実は（ここから本題・予定の変更）"}}, {"t": ", it "}, {"t": "conflicts", "sign": {"k": "vocab", "label": "conflicts", "note": "conflict＝（予定が）ぶつかる"}}, {"t": " with an important meeting at work. "}, {"t": "Could I", "sign": {"k": "link", "label": "Could I", "note": "クダイ（d と I がつながる）"}}, {"t": " come in later that same day?"}]}, {"sp": "W", "seg": [{"t": "Let me check. We have an "}, {"t": "opening", "sign": {"k": "vocab", "label": "opening", "note": "opening＝（予約の）空き"}}, {"t": " at four thirty. Would that work?"}]}], "wana": "meeting（会議）は予約を変えたい理由として出ただけで、会議を取り消したいわけではありません。また男性は later that same day（同じ日の遅い時間）と言っているので「別の日」は時間がずれたワナです。", "tora": "虎の巻：依頼・希望を聞く問題は Actually の後に本音が来る。Could I ～? の中身を、選択肢では別の言い方（change the time）で探そう。"}, {"id": "q03", "part": 1, "audio": "audio/q03.mp3", "scene": "第1部・発表が延期になった理由", "q": "Why was the woman's presentation moved?", "choices": ["The manager went on a business trip.", "The sales team was too busy.", "Some equipment needed to be fixed.", "She needed more time to practice."], "ans": 2, "script": [{"sp": "M", "seg": [{"t": "Hi, Lisa. Ready for your presentation to the sales team this afternoon?"}]}, {"sp": "W", "seg": [{"t": "It's been "}, {"t": "postponed", "sign": {"k": "vocab", "label": "postponed", "note": "postpone＝延期する"}}, {"t": " until next Monday."}]}, {"sp": "M", "seg": [{"t": "Oh, really? Is it because the manager is away on a business trip?"}]}, {"sp": "W", "seg": [{"t": "I thought so at first. "}, {"t": "But", "sign": {"k": "shift", "label": "But", "note": "しかし（ここから本当の理由）"}}, {"t": " "}, {"t": "it turns out", "sign": {"k": "link", "label": "it turns out", "note": "イッターンザウト（it の t は詰まり、turns の s と out がつながる）"}}, {"t": " the projector in the meeting room is broken. It can't be repaired until the weekend."}]}, {"sp": "M", "seg": [{"t": "Well, at least you'll have more time to practice."}]}], "wana": "出張中のマネージャーは男性の推測で、女性も「最初はそう思った」と言った後に But で打ち消しています。練習の時間は延期の結果であって理由ではありません。", "tora": "虎の巻：理由を聞く問題は「最初はそう思った（I thought so at first）→ But」の後が本当の理由。結果（more time to practice）と理由を取り違えないこと。"}, {"id": "q04", "part": 1, "audio": "audio/q04.mp3", "scene": "第1部・電動自転車の試乗", "q": "What is one thing we learn about the electric bike?", "choices": ["It can only go fifteen kilometers on one charge.", "It must be charged at the store.", "It is not ready for a test ride yet.", "It has a battery that can be removed."], "ans": 3, "script": [{"sp": "W", "seg": [{"t": "Excuse me, "}, {"t": "can I", "sign": {"k": "link", "label": "can I", "note": "キャナイ（n と I がつながる）"}}, {"t": " take this electric bike for a test ride?"}]}, {"sp": "M", "seg": [{"t": "Sure, ride it around the parking lot. It's fully charged, so it can go about sixty kilometers."}]}, {"sp": "W", "seg": [{"t": "Great. My office is fifteen kilometers from home. How long does charging take?"}]}, {"sp": "M", "seg": [{"t": "About four hours. "}, {"t": "Also", "sign": {"k": "shift", "label": "Also", "note": "それに（大事な情報を付け足す合図）"}}, {"t": ", the "}, {"t": "battery", "sign": {"k": "vocab", "label": "battery", "note": "battery＝電池"}}, {"t": " is "}, {"t": "attached", "sign": {"k": "vocab", "label": "attached", "note": "attach＝取り付ける"}}, {"t": " under the seat, but you can take it off and charge it "}, {"t": "inside your", "sign": {"k": "link", "label": "inside your", "note": "インサイジュア（d と y がつながる）"}}, {"t": " home."}]}], "wana": "fifteen kilometers は女性の家から会社までの距離で、自転車が走れる距離（about sixty kilometers）ではありません。数字が2つ出たら、どちらが何の数字かを区別しましょう。", "tora": "虎の巻：内容一致は数字の取り違えが定番のワナ。「何の数字か」をメモし、正解は take off → remove のような言い換えで探そう。"}, {"id": "q05", "part": 1, "audio": "audio/q05.mp3", "scene": "第1部・週末の出かけ先", "q": "What will the man and woman probably do on Saturday?", "choices": ["Listen to some music outside.", "Watch a movie about space.", "Go to the museum's art show.", "Eat lunch at the city museum."], "ans": 0, "script": [{"sp": "M", "seg": [{"t": "Hey, Amy. "}, {"t": "Do you want to", "sign": {"k": "link", "label": "Do you want to", "note": "ドゥユワナ（want to がワナ）"}}, {"t": " see that new space movie on Saturday?"}]}, {"sp": "W", "seg": [{"t": "Hmm, my cousin saw it last week and said it was really boring."}]}, {"sp": "M", "seg": [{"t": "Then how about the art show at the city museum?"}]}, {"sp": "W", "seg": [{"t": "I went there with my class. There's a jazz concert in the park, and "}, {"t": "admission", "sign": {"k": "vocab", "label": "admission", "note": "admission＝入場（料）"}}, {"t": " is free. Let's go there "}, {"t": "instead", "sign": {"k": "shift", "label": "instead", "note": "代わりに（案が変わる合図）"}}, {"t": "."}]}, {"sp": "M", "seg": [{"t": "Sounds good. I'll bring "}, {"t": "something to", "sign": {"k": "link", "label": "something to", "note": "サムスィントゥ（g が落ちる）"}}, {"t": " eat."}]}], "wana": "宇宙の映画も美術展も、男性が出した案ですが女性の返事で消えています。最後に eat という語が出るので、食事の選択肢にも引っかからないようにしましょう。", "tora": "虎の巻：案が次々に変わる会話は instead（代わりに）の直前に決まった案が来る。concert in the park → music outside のまとめた言い換えに注意。"}, {"id": "q06", "part": 1, "audio": "audio/q06.mp3", "scene": "第1部・ホテルの部屋のエアコン", "q": "What is the woman's problem?", "choices": ["The people next door are too noisy.", "She cannot move to another floor.", "Nobody came to fix the machine.", "Her air conditioner does not cool the room."], "ans": 3, "script": [{"sp": "M", "seg": [{"t": "Front desk. How may I help you?"}]}, {"sp": "W", "seg": [{"t": "Hi, this is Room 512. The air conditioner is making a strange noise."}]}, {"sp": "M", "seg": [{"t": "I'm sorry. I'll "}, {"t": "send someone", "sign": {"k": "link", "label": "send someone", "note": "センサムワン（d が落ちる）"}}, {"t": " from "}, {"t": "maintenance", "sign": {"k": "vocab", "label": "maintenance", "note": "maintenance＝（建物の）点検・修理の係"}}, {"t": " right away."}]}, {"sp": "W", "seg": [{"t": "Well, the noise isn't really the problem. "}, {"t": "What bothers me", "sign": {"k": "shift", "label": "What bothers me", "note": "困っているのは（本当の問題を言う合図）"}}, {"t": " is that it only blows warm air, so the room is "}, {"t": "really hot", "sign": {"k": "link", "label": "really hot", "note": "リーリィハッ（最後の t がほとんど聞こえない）"}}, {"t": "."}]}, {"sp": "M", "seg": [{"t": "I see. Then we'll move you to another room on the same "}, {"t": "floor", "sign": {"k": "vocab", "label": "floor", "note": "floor＝（建物の）階"}}, {"t": "."}]}], "wana": "女性は最初に noise（音）の話をしますが、音を出しているのは隣の人ではなくエアコンで、しかも「音は本当の問題ではない」と自分で打ち消しています。修理の人はこれから行くところなので「だれも来なかった」も誤りです。", "tora": "虎の巻：トラブル特定は「～isn't really the problem. What bothers me is ～」の後が本当の問題。最初に言った不満に飛びつかないこと。"}, {"id": "q07", "part": 1, "audio": "audio/q07.mp3", "scene": "第1部・理科の授業の持ち物", "q": "What does the girl ask her father to do?", "choices": ["Take the bottles out for recycling.", "Pick up some drinks at a store.", "Help her with her science homework.", "Carry three bottles to her school."], "ans": 1, "script": [{"sp": "W", "seg": [{"t": "Dad, I need to bring some empty plastic bottles to school tomorrow for science class."}]}, {"sp": "M", "seg": [{"t": "Oh no. We put all our bottles out for "}, {"t": "recycling", "sign": {"k": "vocab", "label": "recycling", "note": "recycling＝リサイクル・資源ごみ"}}, {"t": " this morning."}]}, {"sp": "W", "seg": [{"t": "Then", "sign": {"k": "shift", "label": "Then", "note": "それなら（新しいお願いに切り替わる合図）"}}, {"t": " "}, {"t": "could you", "sign": {"k": "link", "label": "could you", "note": "クッジュ（d と y がつながる）"}}, {"t": " "}, {"t": "stop by", "sign": {"k": "link", "label": "stop by", "note": "ストッパイ（p と b がつながる）"}}, {"t": " the supermarket on your way home? Just buy a few bottles of water. We can drink it tonight."}]}, {"sp": "M", "seg": [{"t": "Sure. How many do you need?"}]}, {"sp": "W", "seg": [{"t": "Three would be enough. Thanks, Dad."}]}], "wana": "ボトルを資源ごみに出したのは今朝のことで、もう終わっています。three や school など台本の語を使った選択肢は、学校にボトルを持っていく女の子自身の行動で、お父さんへのお願いではありません。", "tora": "虎の巻：依頼の問題は could you ～? の中身を聞く。stop by the supermarket ＋ buy bottles of water → pick up drinks at a store のように2つをまとめた言い換えに注意。"}, {"id": "q08", "part": 1, "audio": "audio/q08.mp3", "scene": "第1部・図書館の本の貸出延長", "q": "What will the woman probably do next?", "choices": ["Go online to keep two books longer.", "Take all the books back tonight.", "Reserve a book for someone else.", "Ask her husband to renew the books."], "ans": 0, "script": [{"sp": "W", "seg": [{"t": "Hi. Three books I borrowed are due today, but I'm sick in bed. Can I "}, {"t": "renew", "sign": {"k": "vocab", "label": "renew", "note": "renew＝（貸出を）延長する"}}, {"t": " them?"}]}, {"sp": "M", "seg": [{"t": "Two of them, yes, but only on our website. "}, {"t": "The third", "sign": {"k": "shift", "label": "The third", "note": "3冊目は（話の対象が切り替わる合図）"}}, {"t": " was "}, {"t": "reserved", "sign": {"k": "vocab", "label": "reserved", "note": "reserve＝予約する"}}, {"t": " by someone else, so it must come back today."}]}, {"sp": "W", "seg": [{"t": "OK. My husband can "}, {"t": "drop it off", "sign": {"k": "link", "label": "drop it off", "note": "ドロッピトフ（p と i、t と o がつながる）"}}, {"t": " tonight."}]}, {"sp": "M", "seg": [{"t": "Great. Renewing online only takes a minute."}]}, {"sp": "W", "seg": [{"t": "In that case", "sign": {"k": "shift", "label": "In that case", "note": "それなら（次の行動を決める合図）"}}, {"t": ", I'll do it right now."}]}], "wana": "今夜1冊を返すのは女性ではなく夫で、しかも返すのは3冊すべてではなく予約が入った1冊だけです。reserve（予約）したのは別の利用者なので、女性の行動ではありません。", "tora": "虎の巻：最後の I'll do it の it が何を指すかを、前の発言（renew on our website／Renewing online）にさかのぼって考えよう。だれの行動かにも注意。"}, {"id": "q09", "part": 1, "audio": "audio/q09.mp3", "scene": "第1部・新しいコピー機の不具合", "q": "What is the woman's problem?", "choices": ["She cannot find the sales report.", "She is unable to copy things in color.", "The screen on the machine is broken.", "She must give the report to the managers."], "ans": 1, "script": [{"sp": "M", "seg": [{"t": "Karen, how's the new copy machine?"}]}, {"sp": "W", "seg": [{"t": "Not great. I "}, {"t": "tried to", "sign": {"k": "link", "label": "tried to", "note": "トライド・トゥ→「トライトゥ」。dがほとんど聞こえず、次のtにのみこまれる"}}, {"t": " make color copies of the sales report, but they "}, {"t": "came out", "sign": {"k": "link", "label": "came out", "note": "ケイム・アウト→「ケイマウト」とつながる"}}, {"t": " in black and white."}]}, {"sp": "M", "seg": [{"t": "Did you press \"Color\" on the screen? That button is hard to find."}]}, {"sp": "W", "seg": [{"t": "Yes, "}, {"t": "but then", "sign": {"k": "shift", "label": "but then", "note": "でもそのあと＝「ボタンは押した」の後に本当の原因が来る合図"}}, {"t": " a message said I don't have "}, {"t": "permission", "sign": {"k": "vocab", "label": "permission", "note": "permission＝許可"}}, {"t": "."}]}, {"sp": "M", "seg": [{"t": "Only managers can use that "}, {"t": "feature", "sign": {"k": "vocab", "label": "feature", "note": "feature＝（機械の）機能"}}, {"t": ". I'll ask Mr. Lee to add you."}]}], "wana": "sales report・screen・managers は全部台本に出てくる語。レポートは見つかっているし、画面はボタンが「見つけにくい」だけで壊れてはおらず、managers は色を使える人の説明なので、どれも問題ではない。", "tora": "虎の巻：problem の問題は「本人が最初に言った不満」が答えの中心。相手の確認（ボタン押した？）の後の But then 以下で「許可がない＝カラーにできない」と原因まで決まる。"}, {"id": "q10", "part": 1, "audio": "audio/q10.mp3", "scene": "第1部・家具店で机の配送を頼む", "q": "What is one thing we learn about the desk?", "choices": ["It will be delivered this Saturday.", "It does not have to be built at home.", "It comes with simple instructions.", "It is too wide for the man's door."], "ans": 1, "script": [{"sp": "M", "seg": [{"t": "I'd like to buy this wooden desk. Could you "}, {"t": "deliver", "sign": {"k": "vocab", "label": "deliver", "note": "deliver＝配達する"}}, {"t": " it on Saturday?"}]}, {"sp": "W", "seg": [{"t": "Sorry, our trucks are fully booked this weekend. The earliest we can "}, {"t": "bring it", "sign": {"k": "link", "label": "bring it", "note": "ブリング・イット→「ブリンギッ」。最後のtが消える"}}, {"t": " is next Tuesday."}]}, {"sp": "M", "seg": [{"t": "That's fine. Will someone "}, {"t": "put it together", "sign": {"k": "link", "label": "put it together", "note": "プット・イット→「プリットゥゲザー」とつながる"}}, {"t": " for me? Instructions are always so "}, {"t": "complicated", "sign": {"k": "vocab", "label": "complicated", "note": "complicated＝複雑な、ややこしい"}}, {"t": "."}]}, {"sp": "W", "seg": [{"t": "Actually", "sign": {"k": "shift", "label": "Actually", "note": "実は＝相手の思いこみをひっくり返す合図。この後に答え"}}, {"t": ", you won't need to, because this model arrives ready to use. Just make sure it fits through your door."}]}], "wana": "Saturday は男性の希望で、実際は来週の火曜。instructions は男性が「いつも複雑」と言っただけ、door は「通るか確かめて」と言っただけで、大きすぎるとは言っていない。", "tora": "虎の巻：Actually の後は「相手の思いこみの訂正」。put it together（組み立てる）→ arrives ready to use（そのまま使える状態で届く）→ does not have to be built と、同じ内容が形を変えて出てくる。"}, {"id": "q11", "part": 1, "audio": "audio/q11.mp3", "scene": "第1部・友だちにバイトのシフト交代を頼む", "q": "Why does the man want the woman to work on Sunday?", "choices": ["He is going on a trip that day.", "He wants to work fewer hours.", "He has a Friday shift at the bookstore.", "He will join a celebration for a relative."], "ans": 3, "script": [{"sp": "M", "seg": [{"t": "Nora, "}, {"t": "could you", "sign": {"k": "link", "label": "could you", "note": "クッド・ユー→「クッジュ」"}}, {"t": " "}, {"t": "cover", "sign": {"k": "vocab", "label": "cover", "note": "cover＝（人の仕事を）代わりに受け持つ"}}, {"t": " my shift at the bookstore this Sunday? I'll take your Friday shift "}, {"t": "in return", "sign": {"k": "vocab", "label": "in return", "note": "in return＝お返しに"}}, {"t": "."}]}, {"sp": "W", "seg": [{"t": "Sure, but you never take a day off. Aren't you working extra hours to save money for your trip?"}]}, {"sp": "M", "seg": [{"t": "I am, "}, {"t": "but", "sign": {"k": "shift", "label": "but", "note": "でも＝前の話（お金をためたい）を認めたうえで、本当の理由へ切り替える合図"}}, {"t": " something important "}, {"t": "came up", "sign": {"k": "link", "label": "came up", "note": "ケイム・アップ→「ケイマップ」。急な用事ができた"}}, {"t": ". My grandmother turns eighty on Sunday, and my family is throwing a surprise party for her."}]}, {"sp": "W", "seg": [{"t": "How sweet! Say happy birthday from me."}]}], "wana": "trip と hours は女性の言ったことで、男性は旅行に行くわけでも、働く時間を減らしたいわけでもない（お返しに金曜に入る）。Friday shift は女性のシフトなので「別の人のこと」のワナ。", "tora": "虎の巻：理由の問題は I am, but ～（そうなんだけど、でも）の後に本当の理由が来る。grandmother の birthday party → a celebration for a relative と、具体を抽象にまとめた選択肢を選ぶ。"}, {"id": "q12", "part": 1, "audio": "audio/q12.mp3", "scene": "第1部・結婚記念日の過ごし方", "q": "What will they probably do for their anniversary?", "choices": ["Spend a weekend alone in the mountains.", "Leave their children with a babysitter.", "Take their children to a lake.", "Visit her parents in Europe."], "ans": 2, "script": [{"sp": "M", "seg": [{"t": "Honey, our wedding "}, {"t": "anniversary", "sign": {"k": "vocab", "label": "anniversary", "note": "anniversary＝記念日"}}, {"t": " is next month. "}, {"t": "How about", "sign": {"k": "link", "label": "How about", "note": "ハウ・アバウト→「ハウバウ」。最後のtが消える"}}, {"t": " a weekend in the mountains, just the two of us?"}]}, {"sp": "W", "seg": [{"t": "That sounds lovely, but who'd watch the kids? My parents are in Europe until June."}]}, {"sp": "M", "seg": [{"t": "Then maybe we could "}, {"t": "hire", "sign": {"k": "vocab", "label": "hire", "note": "hire＝（お金を払って）人を頼む"}}, {"t": " a babysitter for one night?"}]}, {"sp": "W", "seg": [{"t": "I'd worry all night. "}, {"t": "Instead", "sign": {"k": "shift", "label": "Instead", "note": "そのかわりに＝前の案をやめて新しい案を出す合図。この後が答え"}}, {"t": ", let's take the "}, {"t": "kids along", "sign": {"k": "link", "label": "kids along", "note": "キッズ・アロング→「キッザロング」とつながる"}}, {"t": " to the lake where we first met."}]}, {"sp": "M", "seg": [{"t": "Perfect. That'll be "}, {"t": "memorable", "sign": {"k": "vocab", "label": "memorable", "note": "memorable＝記憶に残る"}}, {"t": "."}]}], "wana": "mountains と babysitter は途中で出て、女性に断られた案。Europe は女性の両親がいる場所で、行くとは言っていない。", "tora": "虎の巻：夫婦の「提案→反対→修正」の会話は、Instead の後の最後の案が答え。take the kids along to the lake → take their children to a lake と、kids→children の言い換えに気づこう。"}, {"id": "q13", "part": 1, "audio": "audio/q13.mp3", "scene": "第1部・カメラの修理の問い合わせ", "q": "What does the woman say about the man's camera?", "choices": ["It will be ready by this Friday.", "He must pay to borrow another camera.", "It must be sent overseas for repairs.", "It will take longer than usual to fix."], "ans": 3, "script": [{"sp": "W", "seg": [{"t": "Good afternoon, City Camera Repair."}]}, {"sp": "M", "seg": [{"t": "Hi, I "}, {"t": "dropped off", "sign": {"k": "link", "label": "dropped off", "note": "ドロップト・オフ→「ドロップトフ」とつながる"}}, {"t": " my camera last Monday. Is it ready yet?"}]}, {"sp": "W", "seg": [{"t": "Let's see, one part needs to be "}, {"t": "replaced", "sign": {"k": "vocab", "label": "replaced", "note": "replace＝取りかえる"}}, {"t": ". That normally takes a week, "}, {"t": "but", "sign": {"k": "shift", "label": "but", "note": "でも＝「ふだんは」と「今回は」を比べる合図。数字の違いに注意"}}, {"t": " this part comes from "}, {"t": "overseas", "sign": {"k": "vocab", "label": "overseas", "note": "overseas＝海外（から）"}}, {"t": ", so it'll take two more weeks."}]}, {"sp": "M", "seg": [{"t": "Oh no, my daughter's graduation "}, {"t": "ceremony", "sign": {"k": "vocab", "label": "ceremony", "note": "ceremony＝式"}}, {"t": " is this Friday."}]}, {"sp": "W", "seg": [{"t": "In that case", "sign": {"k": "shift", "label": "In that case", "note": "それなら＝相手の事情に合わせて新しい提案をする合図"}}, {"t": ", we can lend you one for free until yours is fixed."}]}], "wana": "Friday は娘の卒業式の日で、カメラはそれに間に合わない。overseas から来るのは部品で、カメラを海外へ送るわけではない。代わりのカメラは for free（無料）で、お金を払う必要はない。", "tora": "虎の巻：「ふだんは～, but 今回は～」と数字が2つ出たら対比が問われる。a week → two more weeks を longer than usual とまとめた選択肢を選ぶ。"}, {"id": "q14", "part": 1, "audio": "audio/q14.mp3", "scene": "第1部・海外からの来客の準備", "q": "What does the woman want the man to do?", "choices": ["Meet the visitors at the airport.", "Give the guests a factory tour.", "Book a bus for the guests.", "Print documents for the meeting."], "ans": 1, "script": [{"sp": "W", "seg": [{"t": "Brian, our visitors from Canada arrive tomorrow afternoon."}]}, {"sp": "M", "seg": [{"t": "I know. Should I "}, {"t": "pick them up", "sign": {"k": "link", "label": "pick them up", "note": "ピック・ゼム・アップ→「ピッケマップ」とつながる"}}, {"t": " at the airport?"}]}, {"sp": "W", "seg": [{"t": "No, they'll take the hotel's free bus. "}, {"t": "What I'd like you to do is", "sign": {"k": "shift", "label": "What I'd like you to do is", "note": "あなたにしてほしいのは＝依頼の中身が始まる合図"}}, {"t": " "}, {"t": "show them around", "sign": {"k": "link", "label": "show them around", "note": "ショウ・ゼム・アラウンド→「ショウエマラウンド」"}}, {"t": " our factory before the meeting."}]}, {"sp": "M", "seg": [{"t": "Sure. Should I print some documents, too?"}]}, {"sp": "W", "seg": [{"t": "Jenny's already done that. And please "}, {"t": "remind", "sign": {"k": "vocab", "label": "remind", "note": "remind＝（人に）念を押す、思い出させる"}}, {"t": " everyone to wear a safety helmet."}]}], "wana": "airport は男性の申し出で、女性は No と断った。bus はホテルが出すもの、documents はもう Jenny が用意したので、どれも男性に頼んだことではない。", "tora": "虎の巻：依頼の問題は What I'd like you to do is ～ / I need you to ～ の後をねらう。show them around our factory → give the guests a factory tour の言い換えに気づこう。"}, {"id": "q15", "part": 1, "audio": "audio/q15.mp3", "scene": "第1部・昼食に遅れる電話", "q": "What is the woman's problem?", "choices": ["Her train was delayed by the snow.", "She lost the thriller she was reading.", "She cannot find the restaurant.", "She stayed on the train too long."], "ans": 3, "script": [{"sp": "W", "seg": [{"t": "Mark, it's Emma. Sorry, I'll be about thirty minutes late for lunch."}]}, {"sp": "M", "seg": [{"t": "No problem. Are the trains delayed "}, {"t": "because of", "sign": {"k": "link", "label": "because of", "note": "ビコーズ・オブ→「ビコーゾヴ」とつながる"}}, {"t": " the snow?"}]}, {"sp": "W", "seg": [{"t": "Actually", "sign": {"k": "shift", "label": "Actually", "note": "実は＝相手の予想（雪）を打ち消す合図。本当の原因はこの後"}}, {"t": ", they're on time. It's "}, {"t": "embarrassing", "sign": {"k": "vocab", "label": "embarrassing", "note": "embarrassing＝恥ずかしい、きまりが悪い"}}, {"t": ", but I was so into a "}, {"t": "thriller", "sign": {"k": "vocab", "label": "thriller", "note": "thriller＝ハラハラする小説"}}, {"t": " that I didn't notice my stop, and now I'm three stations past it."}]}, {"sp": "M", "seg": [{"t": "I've done that, too. I'll "}, {"t": "get us a", "sign": {"k": "link", "label": "get us a", "note": "ゲット・アス・ア→「ゲラサ」とつながる"}}, {"t": " table at the restaurant."}]}], "wana": "snow は男性の予想で、女性は「電車は時間どおり」と打ち消した。thriller は夢中で読んでいたもの、restaurant は男性が席を取る場所で、なくしたり見つからなかったりはしていない。", "tora": "虎の巻：遅刻の電話は、相手の予想（雪で遅れた？）を Actually で打ち消した後に本当の原因が来る。didn't notice my stop / three stations past it → stayed on the train too long（乗りすぎた） と言い換えに気づく。"}, {"id": "q16", "part": 2, "audio": "audio/q16.mp3", "scene": "第2部・大学生のボランティア探し", "q": "What did Priya finally decide to do?", "choices": ["Work at an animal shelter on weekends.", "Clean up a park with her friend.", "Find more volunteers for her town.", "Read to older people once a week."], "ans": 3, "script": [{"sp": null, "seg": [{"t": "Priya is a university student who wanted to help people in her town. "}, {"t": "At first", "sign": {"k": "shift", "label": "At first", "note": "最初の案。あとで覆るサイン"}}, {"t": ", she planned to volunteer at a local animal "}, {"t": "shelter", "sign": {"k": "vocab", "label": "shelter", "note": "shelter＝（動物の）保護施設"}}, {"t": " on weekends. "}, {"t": "However", "sign": {"k": "shift", "label": "However", "note": "予定が変わる合図。ここから話が動く"}}, {"t": ", the shelter already had too many volunteers. Her friend suggested cleaning up the park, but Priya wanted to work with people. "}, {"t": "In the end", "sign": {"k": "shift", "label": "In the end", "note": "最終的に何をしたか＝答えの場所"}}, {"t": ", she began reading books to "}, {"t": "elderly", "sign": {"k": "vocab", "label": "elderly", "note": "elderly＝高齢の"}}, {"t": " residents at a nursing home every Saturday."}]}], "wana": "動物の保護施設は最初の案（ボランティアが多すぎて実現せず）、公園の清掃は友人の提案で、どちらも本人は選んでいない。volunteers や town は台本に出た語で作った見せかけの選択肢。", "tora": "虎の巻：人物ストーリーの「最終的に」は In the end の後だけを拾う。At first の案と他人の提案は消去する。"}, {"id": "q17", "part": 2, "audio": "audio/q17.mp3", "scene": "第2部・ラクダと水", "q": "What is one thing we learn about camels?", "choices": ["They keep water in the bumps on their backs.", "They need to drink some water every day.", "They can take in a lot of water at once.", "They eat more when food is hard to find."], "ans": 2, "script": [{"sp": null, "seg": [{"t": "Camels live in dry deserts. "}, {"t": "Many people believe", "sign": {"k": "shift", "label": "Many people believe", "note": "よくある思いこみの前置き（このあと However で否定）"}}, {"t": " that they "}, {"t": "store", "sign": {"k": "vocab", "label": "store", "note": "store＝たくわえる"}}, {"t": " water in their humps, or large bumps, on their backs. "}, {"t": "However", "sign": {"k": "shift", "label": "However", "note": "思いこみを否定して本当のことを言う合図"}}, {"t": ", these bumps are actually filled with fat, which the animals use for energy when food is hard to find. They can also go for many days without drinking. "}, {"t": "When they finally find water", "sign": {"k": "shift", "label": "When they finally find water", "note": "場面の切り替え。最後の特徴＝答えの場所"}}, {"t": ", they can drink a "}, {"t": "huge amount", "sign": {"k": "vocab", "label": "huge amount", "note": "huge amount＝ものすごい量"}}, {"t": " very quickly."}]}], "wana": "「こぶに水をためる」は Many people believe で紹介された思いこみで、However で否定されている。何日も水を飲まずにいられるので「毎日飲む必要がある」も逆。", "tora": "虎の巻：豆知識・科学型は、思いこみ（Many people believe）→ 本当のこと（However）→ 補足の特徴、の順。質問が「1つ分かること」なら最後の補足まで聞き切る。"}, {"id": "q18", "part": 2, "audio": "audio/q18.mp3", "scene": "第2部・スーパーの店内放送（パン売り場の変更）", "q": "What is one thing the speaker says about the bread?", "choices": ["It is now being sold near the entrance.", "It is sold until eight o'clock tonight.", "It is half price at the flower stand.", "It will be baked again at seven."], "ans": 0, "script": [{"sp": null, "seg": [{"t": "Attention, shoppers. Our bakery "}, {"t": "section", "sign": {"k": "vocab", "label": "section", "note": "section＝売り場"}}, {"t": " usually stays open until eight, but "}, {"t": "tonight", "sign": {"k": "shift", "label": "tonight", "note": "いつもと今夜の対比。変更点のサイン"}}, {"t": " it will close at seven because one of our ovens needs to be repaired. "}, {"t": "However", "sign": {"k": "shift", "label": "However", "note": "閉まるけれど…の後に買える方法＝答えの場所"}}, {"t": ", freshly baked bread is still "}, {"t": "available", "sign": {"k": "vocab", "label": "available", "note": "available＝手に入る、買える"}}, {"t": ". We have "}, {"t": "temporarily", "sign": {"k": "vocab", "label": "temporarily", "note": "temporarily＝一時的に"}}, {"t": " moved it to a table at the front of the store, next to the flower stand. All bread there is thirty percent off until we close at ten."}]}], "wana": "8時はいつもの閉店時刻、7時は今夜の閉店時刻で、パンが売られるのは10時まで。花売り場は「となり」で、値引きは半額ではなく30％。", "tora": "虎の巻：アナウンスは「いつも（usually）」と「今日（tonight）」の数字の対比をメモし、However の後の新しい条件を拾う。"}, {"id": "q19", "part": 2, "audio": "audio/q19.mp3", "scene": "第2部・会社員と同僚の助け", "q": "What did Greg's coworker do?", "choices": ["She finished the posters for Greg.", "She took three days off from work.", "She got in touch with the client.", "She missed an important deadline."], "ans": 2, "script": [{"sp": null, "seg": [{"t": "Greg works at a design company. Last month, he was making posters for an important "}, {"t": "client", "sign": {"k": "vocab", "label": "client", "note": "client＝（仕事の）お客、取引先"}}, {"t": ". "}, {"t": "Unfortunately", "sign": {"k": "shift", "label": "Unfortunately", "note": "悪い出来事への切り替え"}}, {"t": ", he caught a bad cold and stayed home for three days, just before the "}, {"t": "deadline", "sign": {"k": "vocab", "label": "deadline", "note": "deadline＝締め切り"}}, {"t": ". "}, {"t": "However", "sign": {"k": "shift", "label": "However", "note": "主人公以外の人物（同僚）が動く場所"}}, {"t": ", his coworker Nina offered to contact the client and explain what had happened. Thanks to her, the client agreed to give him one more week, and Greg finished the posters."}]}], "wana": "ポスターを仕上げたのも、3日休んだのも Greg 本人。締め切りは1週間延ばしてもらえたので、誰も遅れていない。", "tora": "虎の巻：第2部は「質問は誰について？」を先に確認。主人公の話の中に出てくる別の人物（同僚・家族）の行動だけを拾う。"}, {"id": "q20", "part": 2, "audio": "audio/q20.mp3", "scene": "第2部・オランダの国王の日とオレンジ色", "q": "Why do people in the Netherlands wear orange on King's Day?", "choices": ["Because it is a bright color for parties.", "Because orange goods sell well at markets.", "Because their king was born in France.", "Because the color is linked to the king's family."], "ans": 3, "script": [{"sp": null, "seg": [{"t": "Every year, people in the Netherlands celebrate King's Day on their king's birthday. On this day, the streets are filled with people in orange clothes. "}, {"t": "Some visitors think", "sign": {"k": "shift", "label": "Some visitors think", "note": "よくある思いこみの前置き。このあと Actually で本当の理由"}}, {"t": " orange is chosen just because it is a "}, {"t": "cheerful", "sign": {"k": "vocab", "label": "cheerful", "note": "cheerful＝明るい、陽気な"}}, {"t": " color. "}, {"t": "Actually", "sign": {"k": "shift", "label": "Actually", "note": "「実は」＝本当の理由がここから"}}, {"t": ", the "}, {"t": "royal", "sign": {"k": "vocab", "label": "royal", "note": "royal＝王の、王室の"}}, {"t": " family's name comes from Orange, a town in southern France, so the color is a symbol of the family. People also sell used things at "}, {"t": "outdoor", "sign": {"k": "vocab", "label": "outdoor", "note": "outdoor＝屋外の"}}, {"t": " markets."}]}], "wana": "「明るい色だから」は Some visitors think で紹介された思いこみで、Actually で打ち消されている。France は王家の名前の元になった町がある国で、王が生まれた場所ではない。", "tora": "虎の巻：文化型の「理由・由来」は、Some people think … → Actually … の形で、思いこみのあとに本当の理由が来る。先に聞こえた理由に飛びつかない。"}, {"id": "q21", "part": 2, "audio": "audio/q21.mp3", "scene": "第2部・駅のアナウンス（特急の乗り場と時刻の変更）", "q": "Where and when will the express train for Westbrook leave?", "choices": ["It will leave from Platform 3 at 9:15.", "It will leave from Platform 8 at 9:15.", "It will leave from Platform 8 at 9:35.", "It will leave from Platform 3 at 9:35."], "ans": 2, "script": [{"sp": null, "seg": [{"t": "Good morning, passengers. The 9:15 express for Westbrook was "}, {"t": "scheduled", "sign": {"k": "vocab", "label": "scheduled", "note": "be scheduled to＝〜する予定だ"}}, {"t": " to leave from Platform 3. "}, {"t": "However", "sign": {"k": "shift", "label": "However", "note": "ここから変更点。前の数字は古い情報になる"}}, {"t": ", because of repair work on the tracks, it will now "}, {"t": "depart", "sign": {"k": "vocab", "label": "depart", "note": "depart＝出発する"}}, {"t": " from Platform 8. The train will also leave twenty minutes later than planned, so its new "}, {"t": "departure", "sign": {"k": "vocab", "label": "departure", "note": "departure＝出発"}}, {"t": " time is 9:35. Passengers going to the airport should change to a local train at Central Station. We are sorry for the trouble."}]}], "wana": "3番線と9時15分は「もともとの予定」の数字。番線と時刻のどちらか一方だけ新しい組み合わせも、変更が2つあることを聞きのがした人へのワナ。", "tora": "虎の巻：アナウンスで数字が2つ対比されたら、However / now の後の新しい方をメモ。番線と時刻の両方が変わることがある。"}, {"id": "q22", "part": 2, "audio": "audio/q22.mp3", "scene": "第2部・サッカー部の高校生が演劇部へ", "q": "Why did Lucas join the drama club?", "choices": ["His teammates asked him to try it.", "He had always been interested in art.", "He wanted to perform on the stage.", "His knee had finally gotten better."], "ans": 1, "script": [{"sp": null, "seg": [{"t": "Lucas plays on his high school's soccer team. Last spring, he hurt his knee and could not play for months. While he was "}, {"t": "recovering", "sign": {"k": "vocab", "label": "recovering", "note": "recover＝回復する"}}, {"t": ", his teammates told him to keep coming to practice. "}, {"t": "However", "sign": {"k": "shift", "label": "However", "note": "チームメートの勧めとは逆の気持ち。ワナと本筋の分かれ目"}}, {"t": ", he felt bored just watching. "}, {"t": "One day", "sign": {"k": "shift", "label": "One day", "note": "話が動く合図。ここから理由につながる"}}, {"t": ", his teacher "}, {"t": "mentioned", "sign": {"k": "vocab", "label": "mentioned", "note": "mention＝（ついでに）話す、ふれる"}}, {"t": " that the drama club needed someone to paint the stage background. "}, {"t": "Since", "sign": {"k": "shift", "label": "Since", "note": "「〜なので」＝理由そのものを言う合図"}}, {"t": " Lucas had always loved art, he joined the club."}]}], "wana": "チームメートが勧めたのは練習に来続けることで、演劇部ではない。stage は舞台の背景（stage background）として出ただけで、Lucas が演じたいとは言っていない。", "tora": "虎の巻：Why の答えは because / since / so の前後にある。人物の「好き・得意」が決め手になる話では、その部分を言い換えた選択肢を選ぶ。"}, {"id": "q23", "part": 2, "audio": "audio/q23.mp3", "scene": "第2部・ペットボトルから作る服", "q": "What is one thing we learn about clothes made from plastic bottles?", "choices": ["They may lose tiny bits of plastic in the wash.", "They are cut into small pieces before being sold.", "They should only be washed by hand at home.", "They create more plastic waste than other clothes."], "ans": 0, "script": [{"sp": null, "seg": [{"t": "Many people do not "}, {"t": "realize", "sign": {"k": "vocab", "label": "realize", "note": "realize＝気づく"}}, {"t": " that their clothes may be made from plastic bottles. Used bottles are collected, cleaned, and cut into tiny pieces. These pieces are then "}, {"t": "melted", "sign": {"k": "vocab", "label": "melted", "note": "melt＝溶かす"}}, {"t": " and stretched into thin "}, {"t": "fibers", "sign": {"k": "vocab", "label": "fibers", "note": "fiber＝繊維"}}, {"t": ", which can be made into jackets and bags. This "}, {"t": "reduces", "sign": {"k": "vocab", "label": "reduces", "note": "reduce＝減らす"}}, {"t": " plastic waste. "}, {"t": "However", "sign": {"k": "shift", "label": "However", "note": "よい点の後に問題点。ここが出題されやすい"}}, {"t": ", scientists say such clothes can "}, {"t": "release", "sign": {"k": "vocab", "label": "release", "note": "release＝放出する、出す"}}, {"t": " very small pieces of plastic when they are washed."}]}], "wana": "細かく切られるのは服ではなく、原料のペットボトル。プラスチックごみは「減る」と言っていて、増えるのではない。", "tora": "虎の巻：科学型は「しくみ→よい点→However, 問題点」の流れ。However の後の問題点が問われやすい。"}, {"id": "q24", "part": 2, "audio": "audio/q24.mp3", "scene": "第2部・博物館のツアー案内", "q": "What do visitors need to do to join today's tour?", "choices": ["Pay twenty dollars at the gallery.", "Join the group without getting a ticket.", "Pick up a pass at the information counter.", "Wait by the whale exhibit until eight."], "ans": 2, "script": [{"sp": null, "seg": [{"t": "Attention, visitors. Our free "}, {"t": "guided tour", "sign": {"k": "vocab", "label": "guided tour", "note": "guided tour＝ガイド付きの見学ツアー"}}, {"t": " of the ocean gallery will start at two o'clock next to the giant whale exhibit. Usually, you can simply join the group, "}, {"t": "but today", "sign": {"k": "shift", "label": "but today", "note": "いつもと違う「今日だけの条件」に切り替わる合図"}}, {"t": " the tour is "}, {"t": "limited", "sign": {"k": "vocab", "label": "limited", "note": "limit＝制限する（be limited to ～＝～に限られる）"}}, {"t": " to twenty people. To "}, {"t": "take part", "sign": {"k": "vocab", "label": "take part", "note": "take part＝参加する（join の言い換え）"}}, {"t": ", please get a ticket at the information desk on the first floor. Also, children under eight must be "}, {"t": "accompanied", "sign": {"k": "vocab", "label": "accompanied", "note": "accompany＝付き添う（be accompanied by ～＝～に付き添われる）"}}, {"t": " by an adult."}]}], "wana": "2は「Usually（ふだんは）」のやり方で、今日は使えない覆った情報。1の twenty は人数、4の eight は子どもの年齢で、聞こえた数字をそのまま別の意味で使ったワナ。", "tora": "虎の巻：アナウンスは Usually／but today の対比が出たら「今日だけの条件」が問われる。数字は「何の数か」まで聞き取る。"}, {"id": "q25", "part": 2, "audio": "audio/q25.mp3", "scene": "第2部・祖母の編み物", "q": "What did Owen's grandmother do in the end?", "choices": ["She gave every grandchild a handmade scarf.", "She bought sweaters at a department store.", "She finished six sweaters by early December.", "She taught Owen how to knit sweaters."], "ans": 0, "script": [{"sp": null, "seg": [{"t": "Owen's grandmother, Ruth, has always loved "}, {"t": "knitting", "sign": {"k": "vocab", "label": "knitting", "note": "knit＝編む（knitting＝編み物）"}}, {"t": ". Last fall, she decided to make sweaters for her six grandchildren as holiday gifts. She "}, {"t": "worked on them", "sign": {"k": "link", "label": "worked on them", "note": "ワークトオンゼム→ワークトンネム（on と them がつながる）"}}, {"t": " every evening, but by early December she had not finished a single one. Owen "}, {"t": "suggested", "sign": {"k": "vocab", "label": "suggested", "note": "suggest＝提案する"}}, {"t": " buying sweaters at a department store, but Ruth "}, {"t": "refused", "sign": {"k": "vocab", "label": "refused", "note": "refuse＝断る"}}, {"t": ". "}, {"t": "In the end", "sign": {"k": "shift", "label": "In the end", "note": "話のオチ（最終的にどうしたか）に切り替わる合図"}}, {"t": ", she knitted a warm scarf for each grandchild "}, {"t": "instead", "sign": {"k": "shift", "label": "instead", "note": "最初の計画（セーター）の代わりに、という変更の合図"}}, {"t": "."}]}], "wana": "2は孫のOwenが提案しただけで、Ruth は refused（断った）。3は six（孫の人数）と early December を組み合わせたワナで、実際は12月初めまでに1着も仕上がらなかった。", "tora": "虎の巻：人物ストーリーは In the end の後がオチ。途中の提案（suggested）は「誰の案か」「採用されたか」を確かめる。"}, {"id": "q26", "part": 2, "audio": "audio/q26.mp3", "scene": "第2部・マングローブの働き", "q": "Why are some countries planting trees along their coasts again?", "choices": ["They provide space for new farms.", "They make seawater less salty.", "They protect the coast from strong waves.", "They grow faster than most trees."], "ans": 2, "script": [{"sp": null, "seg": [{"t": "Mangroves", "sign": {"k": "vocab", "label": "Mangroves", "note": "mangrove＝マングローブ（直後に trees that grow along coasts と説明がある）"}}, {"t": " are trees that grow along "}, {"t": "coasts", "sign": {"k": "vocab", "label": "coasts", "note": "coast＝海岸"}}, {"t": " in warm parts of the world. Unlike most trees, they can live in salty seawater. In many places, people cut them down to make space for farms. "}, {"t": "As a result", "sign": {"k": "shift", "label": "As a result", "note": "原因（木を切った）→結果（問題）への切り替え"}}, {"t": ", storm waves began to "}, {"t": "wash away", "sign": {"k": "link", "label": "wash away", "note": "ウォッシュアウェイ→ウォッシャウェイ（sh と a がつながる）"}}, {"t": " the land near the shore. "}, {"t": "Now", "sign": {"k": "shift", "label": "Now", "note": "問題→今の解決策へ切り替わる合図"}}, {"t": ", some countries are planting them again, because their roots slow down waves and hold the soil."}]}], "wana": "1は farms と space を使ったワナで、農地のために切ったのは過去の話（問題の原因）。2は salty seawater を使ったワナで、塩水で育つだけで水を変えるわけではない。", "tora": "虎の巻：豆知識型は「テーマ→問題（As a result）→解決（Now ～ because）」の順。because の後の理由を、別の言葉でまとめた選択肢を選ぶ。"}, {"id": "q27", "part": 2, "audio": "audio/q27.mp3", "scene": "第2部・誕生日のキャンプ計画", "q": "What did Nadia and her father finally decide to do?", "choices": ["Stay at a hotel near the lake.", "Camp inside their own house.", "Go to the lake a day early.", "Wait until the heavy rain stopped."], "ans": 1, "script": [{"sp": null, "seg": [{"t": "Nadia and her father had planned to go camping by a lake for her birthday. "}, {"t": "However", "sign": {"k": "shift", "label": "However", "note": "計画どおりにいかない展開への切り替え"}}, {"t": ", the day before, the "}, {"t": "weather report", "sign": {"k": "vocab", "label": "weather report", "note": "weather report＝天気予報"}}, {"t": " said heavy rain was coming. Her father looked for a hotel near the lake instead, but every room was "}, {"t": "booked", "sign": {"k": "vocab", "label": "booked", "note": "book＝予約する（every room was booked＝予約で埋まっている）"}}, {"t": ". "}, {"t": "Finally", "sign": {"k": "shift", "label": "Finally", "note": "最終的な決定に切り替わる合図"}}, {"t": ", they "}, {"t": "set up their", "sign": {"k": "link", "label": "set up their", "note": "セットアップ→セラップ（t が軽いラ行の音になって up とつながる）"}}, {"t": " tent in the living room at home. It became a "}, {"t": "memorable", "sign": {"k": "vocab", "label": "memorable", "note": "memorable＝思い出に残る"}}, {"t": " birthday."}]}], "wana": "1はホテルを探したが満室で実現しなかった「途中で覆った案」。3は the day before（前日）を使った時間のずれのワナで、前日に聞いたのは天気予報。", "tora": "虎の巻：計画変更の話は「元の計画→However（問題）→代案→Finally（決定）」の順。途中の代案が実現したかどうかを but の後で確かめる。"}, {"id": "q28", "part": 2, "audio": "audio/q28.mp3", "scene": "第2部・ラジオの音楽祭のお知らせ", "q": "What is one change to the music festival?", "choices": ["It will last for only one day.", "It will start at ten in the morning.", "It will move to an area near City Hall.", "It will offer free parking by the river."], "ans": 0, "script": [{"sp": null, "seg": [{"t": "Good evening, listeners. Here is some news about this weekend's Riverside Music Festival. "}, {"t": "Because", "sign": {"k": "shift", "label": "Because", "note": "変更の理由（強風）を述べる合図"}}, {"t": " strong winds are "}, {"t": "expected", "sign": {"k": "vocab", "label": "expected", "note": "expect＝予想する（be expected＝見込まれている）"}}, {"t": " on Saturday, the two-day outdoor festival will now be held on Sunday only. It will also begin at eleven in the morning "}, {"t": "instead of", "sign": {"k": "shift", "label": "instead of", "note": "数字の対比（10時→11時）の合図"}}, {"t": " ten. Free buses will leave from City Hall every half hour. "}, {"t": "However", "sign": {"k": "shift", "label": "However", "note": "駐車場が使えないという例外への切り替え"}}, {"t": ", the "}, {"t": "parking lot", "sign": {"k": "vocab", "label": "parking lot", "note": "parking lot＝駐車場"}}, {"t": " by the river will not be available."}]}], "wana": "2の ten は変更前の開始時刻で、今は eleven（数字の対比のワナ）。3の City Hall は無料バスの出発場所、4の free と river は「バスが無料」「川沿いの駐車場は使えない」の語を組み合わせたワナ。", "tora": "虎の巻：アナウンスの変更は「数字の新旧」と「場所の役割」を整理する。instead of の前が新しい情報、後ろが古い情報。"}, {"id": "q29", "part": 2, "audio": "audio/q29.mp3", "scene": "第2部・気泡緩衝材の由来", "q": "Why was bubble wrap first made?", "choices": ["To keep plants warm in greenhouses.", "To decorate the walls inside homes.", "To protect computers during shipping.", "To make a new kind of toy."], "ans": 1, "script": [{"sp": null, "seg": [{"t": "Today, bubble wrap is used around the world to protect things during shipping. "}, {"t": "However", "sign": {"k": "shift", "label": "However", "note": "今の使い道→もともとの目的への切り替え"}}, {"t": ", that was not its "}, {"t": "original purpose", "sign": {"k": "vocab", "label": "original purpose", "note": "original＝最初の／purpose＝目的"}}, {"t": ". About seventy years ago, two "}, {"t": "inventors", "sign": {"k": "vocab", "label": "inventors", "note": "inventor＝発明家"}}, {"t": " in America were trying to make a new kind of "}, {"t": "wallpaper", "sign": {"k": "vocab", "label": "wallpaper", "note": "wallpaper＝壁紙"}}, {"t": ". When nobody bought it, they tried using it to keep greenhouses warm, but that failed too. "}, {"t": "Finally", "sign": {"k": "shift", "label": "Finally", "note": "最後にたどり着いた使い道への切り替え"}}, {"t": ", a computer company used it to keep its "}, {"t": "delicate", "sign": {"k": "vocab", "label": "delicate", "note": "delicate＝壊れやすい・繊細な"}}, {"t": " machines safe."}]}], "wana": "1は2回目に試して失敗した使い道、3は最後に見つかった今の使い道で、どちらも「最初の目的」ではない（時間がずれたワナ）。4は a new kind of を使ったワナ。", "tora": "虎の巻：由来の話は「今→However→昔」と時間が行き来する。質問の first／original に合う時点の情報だけを選ぶ。"}, {"id": "q30", "part": 2, "audio": "audio/q30.mp3", "scene": "第2部・留学生の今", "q": "What does Riku do now?", "choices": ["He makes dinner for the family each week.", "He stays in his room most evenings.", "He teaches English to his host mother.", "He takes cooking lessons in Canada."], "ans": 0, "script": [{"sp": null, "seg": [{"t": "Riku, a high school student from Japan, is spending a year with a host family in Canada. "}, {"t": "At first", "sign": {"k": "shift", "label": "At first", "note": "最初の様子（あとで変わる）を示す合図"}}, {"t": ", he lacked "}, {"t": "confidence", "sign": {"k": "vocab", "label": "confidence", "note": "confidence＝自信"}}, {"t": " in his English, so he stayed in his room most evenings. "}, {"t": "One day", "sign": {"k": "shift", "label": "One day", "note": "話が動き出すきっかけの合図"}}, {"t": ", his host mother "}, {"t": "asked him", "sign": {"k": "link", "label": "asked him", "note": "アスクトヒム→アスティム（k・h が弱くなってつながる）"}}, {"t": " to teach her how to cook a Japanese dish. "}, {"t": "Now", "sign": {"k": "shift", "label": "Now", "note": "今の様子への切り替え。質問の now と対応"}}, {"t": ", Riku cooks dinner for everyone every Saturday. His English has also improved "}, {"t": "remarkably", "sign": {"k": "vocab", "label": "remarkably", "note": "remarkably＝目立って・大きく（improve remarkably＝大きく上達する）"}}, {"t": "."}]}], "wana": "2は At first（最初のころ）の様子で、今はもう違う（時間のずれのワナ）。3は教える中身をすりかえたワナで、Riku がホストマザーに教えたのは英語ではなく日本料理。", "tora": "虎の巻：Now を問う質問は、At first（昔）と Now（今）の対比を聞き分ける。teach の「誰が誰に何を」も確かめる。"}];
+const P2_SENTENCES = {"q16": ["Priya is a university student who wanted to help people in her town.", "At first, she planned to volunteer at a local animal shelter on weekends.", "However, the shelter already had too many volunteers.", "Her friend suggested cleaning up the park, but Priya wanted to work with people.", "In the end, she began reading books to elderly residents at a nursing home every Saturday."], "q17": ["Camels live in dry deserts.", "Many people believe that they store water in their humps, or large bumps, on their backs.", "However, these bumps are actually filled with fat, which the animals use for energy when food is hard to find.", "They can also go for many days without drinking.", "When they finally find water, they can drink a huge amount very quickly."], "q18": ["Attention, shoppers.", "Our bakery section usually stays open until eight, but tonight it will close at seven because one of our ovens needs to be repaired.", "However, freshly baked bread is still available.", "We have temporarily moved it to a table at the front of the store, next to the flower stand.", "All bread there is thirty percent off until we close at ten."], "q19": ["Greg works at a design company.", "Last month, he was making posters for an important client.", "Unfortunately, he caught a bad cold and stayed home for three days, just before the deadline.", "However, his coworker Nina offered to contact the client and explain what had happened.", "Thanks to her, the client agreed to give him one more week, and Greg finished the posters."], "q20": ["Every year, people in the Netherlands celebrate King's Day on their king's birthday.", "On this day, the streets are filled with people in orange clothes.", "Some visitors think orange is chosen just because it is a cheerful color.", "Actually, the royal family's name comes from Orange, a town in southern France, so the color is a symbol of the family.", "People also sell used things at outdoor markets."], "q21": ["Good morning, passengers.", "The 9:15 express for Westbrook was scheduled to leave from Platform 3.", "However, because of repair work on the tracks, it will now depart from Platform 8.", "The train will also leave twenty minutes later than planned, so its new departure time is 9:35.", "Passengers going to the airport should change to a local train at Central Station.", "We are sorry for the trouble."], "q22": ["Lucas plays on his high school's soccer team.", "Last spring, he hurt his knee and could not play for months.", "While he was recovering, his teammates told him to keep coming to practice.", "However, he felt bored just watching.", "One day, his teacher mentioned that the drama club needed someone to paint the stage background.", "Since Lucas had always loved art, he joined the club."], "q23": ["Many people do not realize that their clothes may be made from plastic bottles.", "Used bottles are collected, cleaned, and cut into tiny pieces.", "These pieces are then melted and stretched into thin fibers, which can be made into jackets and bags.", "This reduces plastic waste.", "However, scientists say such clothes can release very small pieces of plastic when they are washed."], "q24": ["Attention, visitors.", "Our free guided tour of the ocean gallery will start at two o'clock next to the giant whale exhibit.", "Usually, you can simply join the group, but today the tour is limited to twenty people.", "To take part, please get a ticket at the information desk on the first floor.", "Also, children under eight must be accompanied by an adult."], "q25": ["Owen's grandmother, Ruth, has always loved knitting.", "Last fall, she decided to make sweaters for her six grandchildren as holiday gifts.", "She worked on them every evening, but by early December she had not finished a single one.", "Owen suggested buying sweaters at a department store, but Ruth refused.", "In the end, she knitted a warm scarf for each grandchild instead."], "q26": ["Mangroves are trees that grow along coasts in warm parts of the world.", "Unlike most trees, they can live in salty seawater.", "In many places, people cut them down to make space for farms.", "As a result, storm waves began to wash away the land near the shore.", "Now, some countries are planting them again, because their roots slow down waves and hold the soil."], "q27": ["Nadia and her father had planned to go camping by a lake for her birthday.", "However, the day before, the weather report said heavy rain was coming.", "Her father looked for a hotel near the lake instead, but every room was booked.", "Finally, they set up their tent in the living room at home.", "It became a memorable birthday."], "q28": ["Good evening, listeners.", "Here is some news about this weekend's Riverside Music Festival.", "Because strong winds are expected on Saturday, the two-day outdoor festival will now be held on Sunday only.", "It will also begin at eleven in the morning instead of ten.", "Free buses will leave from City Hall every half hour.", "However, the parking lot by the river will not be available."], "q29": ["Today, bubble wrap is used around the world to protect things during shipping.", "However, that was not its original purpose.", "About seventy years ago, two inventors in America were trying to make a new kind of wallpaper.", "When nobody bought it, they tried using it to keep greenhouses warm, but that failed too.", "Finally, a computer company used it to keep its delicate machines safe."], "q30": ["Riku, a high school student from Japan, is spending a year with a host family in Canada.", "At first, he lacked confidence in his English, so he stayed in his room most evenings.", "One day, his host mother asked him to teach her how to cook a Japanese dish.", "Now, Riku cooks dinner for everyone every Saturday.", "His English has also improved remarkably."]};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const circled = i => (i < 20 ? String.fromCharCode(0x2460 + i) : "(" + (i + 1) + ")");
+const KIND = { link: "🔗 音のつながり", shift: "🔀 話の切り替え", vocab: "📘 語句" };
+
+// ============ トースト ============
+let toastT = null;
+function toast(msg){
+  const t = $("toast"); t.textContent = msg; t.classList.remove("hidden");
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.add("hidden"), 3200);
+}
+function audioFailToast(){ toast("🔇 この画面では音声を再生できません。スマホやPCのブラウザで公開版を開いてください。"); }
+
+// ============ 音（いつも1つだけ鳴らす） ============
+// iPhone は「タップの外で新しく作った音声」を止めることがあるので、音声の部品は1つだけ作って使い回す。
+// 速さは呼ぶ側が渡す（本番の1回・解説の▶はいつも1.0倍。シャドーイングの中だけ「ゆっくり」が効く）。
+const Player = (() => {
+  const a = new Audio(); a.preload = "auto";
+  let token = 0, seq = 0, pendRej = null;
+  function clearMarks(){ document.querySelectorAll(".playing").forEach(b => b.classList.remove("playing")); }
+  function unhook(){ a.onended = a.onerror = a.onplaying = null; }
+  function stop(){
+    token++; seq++; unhook(); try{ a.pause(); }catch(e){} clearMarks();
+    if(pendRej){ const r = pendRej; pendRej = null; const e = new Error("stopped"); e.stopped = true; r(e); }
+  }
+  function once(src, btn, rate){
+    const sp = rate || 1, id = ++seq;
+    return new Promise((res, rej) => {
+      unhook(); try{ a.pause(); }catch(e){}
+      a.src = src;
+      try{ a.defaultPlaybackRate = sp; a.playbackRate = sp; }catch(e){}
+      if(btn) btn.classList.add("playing");
+      let t0 = 0;
+      pendRej = rej;
+      const fin = f => { if(id !== seq) return; pendRej = null; unhook(); if(btn) btn.classList.remove("playing"); f(); };
+      a.onplaying = () => { try{ if(a.playbackRate !== sp) a.playbackRate = sp; }catch(e){} if(!t0) t0 = performance.now(); };
+      a.onended = () => fin(() => res(t0 ? (performance.now() - t0) / 1000 : 3));
+      a.onerror = () => fin(() => rej(new Error("audio")));
+      const p = a.play();
+      if(p && p.catch) p.catch(e => fin(() => rej(e)));
+    });
+  }
+  // 虎の巻・確認を開いている間は止めておき、閉じたら続きから
+  function hold(){ if(a.src && !a.paused){ a.pause(); return true; } return false; }
+  function resume(){ const p = a.play(); if(p && p.catch) p.catch(() => {}); }
+  return { stop, once, hold, resume, get token(){ return token; } };
+})();
+let shRate = 1, shRepeat = 1, holdTimer = false, heldAudio = false, reviewing = false;
+
+// 1つずつ順に鳴らす（くり返し回数・声に出す間つき）。止めたら token が変わって抜ける
+async function playList(list, opt){
+  opt = opt || {};
+  Player.stop();
+  const my = Player.token;
+  for(let k = 0; k < list.length; k++){
+    const u = list[k];
+    for(let r = 0; r < (opt.repeat || 1); r++){
+      if(Player.token !== my) return;
+      if(opt.status) opt.status(u, r);
+      let d;
+      try{ d = await Player.once(u.file, u.btn, opt.rate || 1); }
+      catch(e){ if(Player.token === my){ audioFailToast(); if(opt.status) opt.status(null); } return; }
+      if(Player.token !== my) return;
+      if(opt.gap) await sleep(Math.min(9000, d * 1000 + 700));
+      else if(k < list.length - 1) await sleep(250);
+    }
+  }
+  if(Player.token === my && opt.status) opt.status(null, -1);
+}
+
+// ============ 英文を「流れた順」の単位に分ける ============
+// 第1部＝発話ごと（audio/qNN_sK.mp3）、第2部＝1文ごと（P2_SENTENCES と同じ順・audio/qNN_sK.mp3）、最後に質問（audio/qNN_q.mp3）
+function unitsOf(item){
+  let units;
+  if(item.part === 1){
+    units = item.script.map((ln, i) => ({ sp: ln.sp === "M" ? "m" : "w", who: ln.sp === "M" ? "男性" : "女性", segs: ln.seg, file: `audio/${item.id}_s${i + 1}.mp3` }));
+  } else {
+    const segs = [].concat(...item.script.map(l => l.seg));
+    const full = segs.map(s => s.t).join("");
+    const sents = (P2_SENTENCES[item.id] || []);
+    let pos = 0; const bounds = [];
+    for(const s of sents){
+      const k = full.indexOf(s, pos);
+      if(k < 0){ bounds.length = 0; break; }
+      bounds.push([k, k + s.length]); pos = k + s.length;
+    }
+    if(!bounds.length){
+      // 文に分けられないとき：本文を1つのまとまりで出す
+      units = [{ sp: "n", who: "本文", segs, file: item.audio }];
+    } else {
+      let off = 0;
+      const so = segs.map(s => { const o = Object.assign({}, s, { a: off, b: off + s.t.length }); off += s.t.length; return o; });
+      units = bounds.map(([a, b], i) => ({
+        sp: "n", who: "", file: `audio/${item.id}_s${i + 1}.mp3`,
+        segs: so.filter(x => x.sign ? (x.a >= a && x.a < b) : (x.b > a && x.a < b))
+                .map(x => x.sign ? x : { t: full.slice(Math.max(a, x.a), Math.min(b, x.b)) })
+      }));
+    }
+  }
+  units.push({ sp: "q", who: "質問", segs: [{ t: item.q }], file: `audio/${item.id}_q.mp3`, isQ: true });
+  return units;
+}
+function unitText(u){ return u.segs.map(s => s.sign ? `<mark class="k-${s.sign.k}">${esc(s.t)}</mark>` : esc(s.t)).join("").trim(); }
+function unitNotes(u){
+  const li = u.segs.filter(s => s.sign).map(s => {
+    const n = s.sign.note || "";
+    const body = n.toLowerCase().startsWith(String(s.sign.label).toLowerCase()) ? esc(n) : `<b class="en">${esc(s.sign.label)}</b>：${esc(n)}`;
+    return `<li class="k-${s.sign.k}"><span class="kl">${KIND[s.sign.k] || ""}</span>　${body}</li>`;
+  });
+  return li.length ? `<ul class="unotes">${li.join("")}</ul>` : "";
+}
+
+// ============ 状態 ============
+let SET = [], mode = "part", score = 0, streak = 0, curPart = 1, blocks = [];
+const feed = $("feed");
+
+function hideViews(){ $("start-view").classList.add("hidden"); $("picker-view").classList.add("hidden"); feed.classList.add("hidden"); }
+function setProg(){
+  const n = blocks.filter(b => b.answered).length;
+  $("prog-fill").style.width = (SET.length ? n / SET.length * 100 : 0) + "%";
+}
+
+function startSet(newMode, set){
+  Player.stop(); blocks.forEach(b => clearInterval(b.timer));
+  mode = newMode; SET = set; score = 0; streak = 0; blocks = []; reviewing = false;
+  feed.innerHTML = "";
+  hideViews(); feed.classList.remove("hidden"); $("prog").classList.remove("hidden");
+  setProg();
+  window.scrollTo({ top: 0, behavior: "auto" });
+  addBlock(0);
+}
+
+// ============ 1問ぶんのブロック ============
+function addBlock(i){
+  const item = SET[i];
+  const no = ITEMS.indexOf(item) + 1;
+  const el = document.createElement("article");
+  el.className = "qblock";
+  el.id = "qb-" + i;
+  const learn = mode !== "all";
+  el.innerHTML = `
+    <div class="qhead"><span class="qno">No.${no}</span><span class="scene">（${i + 1}/${SET.length}）</span><span class="qmark"></span><span class="pts"></span></div>
+    <div class="qbody">
+      <div class="step s-ans">
+        <div class="stephead">🎧 聞いて答える</div>
+        <div class="ans-area">
+          <p class="hint">選択肢を先に読んでから ▶ を押そう。英文は1回だけ、質問は最後に読まれます。</p>
+          <div class="choices">
+            ${item.choices.map((c, k) => `<button class="choice en" type="button" data-k="${k}" disabled><span class="no">${k + 1}</span><span>${esc(c)}</span></button>`).join("")}
+            ${learn ? `<button class="choice giveup" type="button" data-k="-2">わからない（解説を見る）</button>` : ""}
+          </div>
+          <button class="playbtn" type="button">▶ 音声を再生（1回だけ）</button>
+          <div class="audiowarn hidden">⚠️ この画面では音声を再生できません。公開版をスマホやPCのブラウザで開いてください。
+            <button class="btn ghost sm skip" type="button" style="margin-top:8px;">音声なしで答える</button></div>
+          <div class="timer hidden"><div class="timerwrap"><div class="timerbar"></div></div><div class="timertext">のこり 10 秒</div></div>
+        </div>
+      </div>
+    </div>`;
+  feed.appendChild(el);
+  const b = { i, item, el, answered: false, timer: null, played: false, sel: null, correct: false, explained: false, shadowed: false };
+  blocks[i] = b;
+
+  const playBtn = el.querySelector(".playbtn");
+  const warn = el.querySelector(".audiowarn");
+  el.querySelectorAll(".choice").forEach(btn => btn.addEventListener("click", () => answer(b, Number(btn.dataset.k))));
+  const gb = el.querySelector(".giveup"); if(gb) gb.disabled = false;
+  playBtn.addEventListener("click", () => {
+    if(b.played || b.answered) return;
+    b.played = true;
+    enableChoices(b);
+    playBtn.disabled = true; playBtn.textContent = "🔊 再生中…（1回だけ・集中！）";
+    Player.once(item.audio, null, 1).then(() => {
+      if(b.answered || !document.body.contains(el)) return;
+      playBtn.textContent = "✔ 再生ずみ（本番も1回だけ）";
+      startTimer(b);
+    }).catch(e => {
+      if(b.answered || !document.body.contains(el)) return;
+      if(e && e.stopped){ playBtn.textContent = "■ 再生を止めました（本番も1回だけ）"; startTimer(b); return; }
+      b.played = false; playBtn.disabled = false; playBtn.textContent = "▶ 音声を再生（1回だけ）";
+      warn.classList.remove("hidden");
+    });
+  });
+  el.querySelector(".skip").addEventListener("click", () => {
+    b.played = true; warn.classList.add("hidden");
+    playBtn.disabled = true; playBtn.textContent = "（音声なしで答えています）";
+    enableChoices(b); startTimer(b);
+  });
+  el.querySelector(".qhead").addEventListener("click", () => {
+    if(!el.classList.contains("done")) return;
+    el.classList.toggle("open");
+    if(el.classList.contains("open") && b.answered && !b.explained && (mode !== "all" || reviewing)) renderExplain(b);
+  });
+  el.scrollIntoView({ behavior: i === 0 ? "auto" : "smooth", block: "start" });
+}
+
+function enableChoices(b){ b.el.querySelectorAll(".choice").forEach(x => { x.disabled = false; }); }
+
+function startTimer(b){
+  const area = b.el.querySelector(".timer"), bar = b.el.querySelector(".timerbar"), txt = b.el.querySelector(".timertext");
+  area.classList.remove("hidden");
+  let remain = 10.0;
+  clearInterval(b.timer);
+  b.timer = setInterval(() => {
+    if(b.answered){ clearInterval(b.timer); return; }
+    if(holdTimer) return;
+    remain -= 0.1;
+    if(remain <= 0){ clearInterval(b.timer); bar.style.width = "0%"; txt.textContent = "時間切れ！"; answer(b, -1); return; }
+    bar.style.width = (remain / 10 * 100) + "%";
+    txt.textContent = "のこり " + Math.ceil(remain) + " 秒";
+  }, 100);
+}
+
+function answer(b, sel){
+  if(b.answered) return;
+  b.answered = true; b.sel = sel;
+  clearInterval(b.timer);
+  Player.stop();
+  const item = b.item;
+  b.correct = (sel === item.ans);
+  let gain = 0;
+  if(b.correct){ streak++; gain = 100 + (streak >= 2 ? 50 : 0); score += gain; } else { streak = 0; }
+  b.gain = gain;
+  b.el.querySelector(".qmark").textContent = b.correct ? "⭕" : (sel === -1 ? "⌛" : (sel === -2 ? "👀" : "❌"));
+  b.el.querySelector(".pts").textContent = score + " pt";
+  b.el.querySelector(".scene").textContent = `${item.scene}（${b.i + 1}/${SET.length}）`;
+  // 答えた所は1行にまとめる（選択肢は下の解説に、質問といっしょに出す）
+  const yours = sel >= 0 ? `${sel + 1}. ${esc(item.choices[sel])}` : (sel === -1 ? "時間切れ" : "解説を見た");
+  b.el.querySelector(".ans-area").innerHTML =
+    `<div class="answered-line">あなたの答え：<b class="en">${yours}</b>　${b.correct ? "⭕" : "→ 正解は " + (item.ans + 1)}</div>`;
+  setProg();
+  if(mode === "all"){
+    // 本番モード：解説は結果のあとで見られる。ここはすぐ次へ
+    const s = document.createElement("div");
+    s.className = "step s-allnext";
+    s.innerHTML = `<div class="btnrow" style="margin-top:0;"><button class="btn nextbtn" type="button">${nextLabel(b)}</button></div>`;
+    b.el.querySelector(".qbody").appendChild(s);
+    s.querySelector(".nextbtn").addEventListener("click", () => goNext(b));
+    s.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  } else {
+    const s = renderExplain(b);
+    s.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+function nextLabel(b){
+  if(reviewing) return b.i === SET.length - 1 ? "結果にもどる ▼" : "次の問題の解説へ ▶";
+  return b.i === SET.length - 1 ? "結果を見る ▶" : "次の問題へ ▶";
+}
+
+// ============ 解説 ============
+function renderExplain(b){
+  if(b.explained) return b.el.querySelector(".s-exp");
+  b.explained = true;
+  const item = b.item, sel = b.sel;
+  const verdict = b.correct ? `⭕ 正解！ +${b.gain}pt` : (sel === -1 ? "⌛ 時間切れ（本番は10秒以内に塗る）" : (sel === -2 ? "👀 解説を見てみよう" : "❌ ざんねん"));
+  const units = unitsOf(item);
+  const tora = String(item.tora || "").replace(/^虎の巻[:：]\s*/, "");
+  const s = document.createElement("div");
+  s.className = "step s-exp";
+  s.innerHTML = `
+    <div class="stephead">📖 解説</div>
+    <div class="verdict ${b.correct ? "ok" : "ng"}">${verdict}</div>
+    <div class="qbox">
+      <div class="qlabel">質問（音声の最後に読まれた）</div>
+      <div class="qline"><div class="qtext en">${esc(item.q)}</div><button class="qsound" type="button">🔊 質問を聞く</button></div>
+      <div class="choices">
+        ${item.choices.map((c, k) => {
+          const cls = k === item.ans ? "is-ok" : (k === sel ? "is-ng" : "");
+          const tag = k === item.ans ? "✅ 正解" : (k === sel ? "あなたの答え" : "");
+          return `<div class="choice en ${cls}"><span class="no">${k + 1}</span><span>${esc(c)}</span><span class="tag">${tag}</span></div>`;
+        }).join("")}
+      </div>
+      <div class="note trap"><div class="nh">⚠️ ひっかけ（ほかの選択肢がちがう理由）</div>${esc(item.wana)}</div>
+    </div>
+    <div class="scripthead"><div class="stephead">📝 流れた順のスクリプト</div><button class="fullbtn" type="button">▶ 全文</button></div>
+    <div class="legend"><span><i class="sw k-link"></i>音のつながり</span><span><i class="sw k-shift"></i>話の切り替え</span><span><i class="sw k-vocab"></i>語句</span></div>
+    <ol class="units ex">
+      ${units.map((u, k) => `<li class="unit ${u.isQ ? "qunit" : ""}"><button class="sbtn" type="button" aria-label="この文を聞く">▶</button><div class="body"><div class="txt en"><span class="ord">${u.isQ ? "" : circled(k)}</span>${u.who ? `<span class="who ${u.sp}">${u.who}</span>` : ""}${unitText(u)}</div>${unitNotes(u)}</div></li>`).join("")}
+    </ol>
+    <div class="note key"><div class="nh">🎯 答えの決め手</div>${esc(tora)}<br><button class="linkbtn" type="button">📜 虎の巻を開く</button></div>
+    <div class="btnrow"><button class="btn acc shbtn" type="button">🗣 シャドーイングで練習</button><button class="btn nextbtn" type="button">${nextLabel(b)}</button></div>`;
+  b.el.querySelector(".qbody").appendChild(s);
+  const qbtn = s.querySelector(".qsound");
+  qbtn.addEventListener("click", () => playList([{ file: `audio/${item.id}_q.mp3`, btn: qbtn }]));
+  const fb = s.querySelector(".fullbtn");
+  fb.addEventListener("click", () => playList([{ file: item.audio, btn: fb }]));
+  s.querySelectorAll(".units.ex .sbtn").forEach((btn, k) => btn.addEventListener("click", () => playList([{ file: units[k].file, btn }])));
+  s.querySelector(".linkbtn").addEventListener("click", openTora);
+  s.querySelector(".shbtn").addEventListener("click", () => { const sh = renderShadow(b); sh.scrollIntoView({ behavior: "smooth", block: "start" }); });
+  s.querySelector(".nextbtn").addEventListener("click", () => goNext(b));
+  return s;
+}
+
+// ============ シャドーイング ============
+function renderShadow(b){
+  if(b.shadowed) return b.el.querySelector(".s-sh");
+  b.shadowed = true;
+  const item = b.item, units = unitsOf(item);
+  const s = document.createElement("div");
+  s.className = "step s-sh shadow";
+  s.innerHTML = `
+    <div class="stephead">🗣 シャドーイングで練習</div>
+    <p class="hint">▶ で1文聞いたら、すぐ同じリズムで声に出そう。「通しで練習」は1文ごとに声に出す間があきます。何回でも、好きな文からどうぞ。かくした英文はタップで見えます。</p>
+    <div class="ctrls">
+      <div class="segctl" data-k="rate"><span>速さ</span><button type="button" data-v="1">ふつう</button><button type="button" data-v="0.8">ゆっくり</button></div>
+      <div class="segctl" data-k="rep"><span>くり返し</span><button type="button" data-v="1">1回</button><button type="button" data-v="3">3回</button></div>
+      <label class="hidetxt"><input type="checkbox" class="mask"> 英文をかくす</label>
+    </div>
+    <div class="btnrow" style="margin-top:0;"><button class="btn sm go" type="button">▶ 通しで練習</button><button class="btn sm ghost stop" type="button">■ 止める</button></div>
+    <div class="shstatus"></div>
+    <ol class="units sh">
+      ${units.map((u, k) => `<li class="unit ${u.isQ ? "qunit" : ""}"><button class="sbtn" type="button" aria-label="この文で練習">▶</button><div class="body"><div class="txt en"><span class="ord">${u.isQ ? "" : circled(k)}</span>${u.who ? `<span class="who ${u.sp}">${u.who}</span>` : ""}<span class="say">${unitText(u)}</span></div></div></li>`).join("")}
+    </ol>
+    <div class="btnrow"><button class="btn nextbtn" type="button">${nextLabel(b)}</button></div>`;
+  b.el.querySelector(".qbody").appendChild(s);
+  const st = s.querySelector(".shstatus");
+  const status = (u, r) => {
+    if(!u){ st.textContent = r === -1 ? "おつかれさま！ もう一度やるなら ▶" : ""; return; }
+    st.textContent = `🔊 ${u.who || u.ord}を再生中${shRepeat > 1 ? `（${r + 1}/${shRepeat}回目）` : ""} → 聞き終わったら声に出そう`;
+  };
+  // 速さ・くり返しは全部の問題で共通（ほかの問題のボタン表示もそろえる）
+  const syncCtl = () => {
+    document.querySelectorAll('.segctl[data-k="rate"] button').forEach(x => x.classList.toggle("on", Number(x.dataset.v) === shRate));
+    document.querySelectorAll('.segctl[data-k="rep"] button').forEach(x => x.classList.toggle("on", Number(x.dataset.v) === shRepeat));
+  };
+  syncCtl();
+  s.querySelectorAll(".segctl button").forEach(x => x.addEventListener("click", () => {
+    const k = x.parentElement.dataset.k;
+    if(k === "rate") shRate = Number(x.dataset.v); else shRepeat = Number(x.dataset.v);
+    syncCtl();
+  }));
+  s.querySelector(".mask").addEventListener("change", e => { s.classList.toggle("masked", e.target.checked); s.querySelectorAll(".say.peek").forEach(x => x.classList.remove("peek")); });
+  s.querySelectorAll(".units.sh .say").forEach(x => x.addEventListener("click", () => { if(s.classList.contains("masked")) x.classList.toggle("peek"); }));
+  const btns = s.querySelectorAll(".units.sh .sbtn");
+  btns.forEach((btn, k) => btn.addEventListener("click", () => playList([{ file: units[k].file, btn, who: units[k].who, ord: units[k].isQ ? "質問" : circled(k) + "の文" }], { repeat: shRepeat, gap: true, status, rate: shRate })));
+  s.querySelector(".go").addEventListener("click", () => playList(units.map((u, k) => ({ file: u.file, btn: btns[k], who: u.who, ord: u.isQ ? "質問" : circled(k) + "の文" })), { repeat: shRepeat, gap: true, status, rate: shRate }));
+  s.querySelector(".stop").addEventListener("click", () => { Player.stop(); st.textContent = ""; });
+  s.querySelector(".nextbtn").addEventListener("click", () => goNext(b));
+  return s;
+}
+
+// ============ 次へ（前の問題はたたんで、下に次の問題を足す） ============
+function goNext(b){
+  Player.stop();
+  b.el.classList.add("done"); b.el.classList.remove("open");
+  const nxt = b.i + 1;
+  if(nxt >= SET.length){ showResult(); return; }
+  if(reviewing){
+    const nb = blocks[nxt];
+    nb.el.classList.add("open");
+    renderExplain(nb).scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  if(blocks[nxt]){ blocks[nxt].el.classList.add("open"); blocks[nxt].el.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+  addBlock(nxt);
+}
+
+// ============ 結果（いちばん下に足す） ============
+function showResult(){
+  let r = $("result-block");
+  if(r){ r.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+  reviewing = true;
+  document.querySelectorAll(".s-allnext").forEach(x => x.remove());
+  blocks.forEach(b => b && b.el.querySelectorAll(".nextbtn").forEach(x => { x.textContent = nextLabel(b); }));
+  const done = blocks.filter(Boolean);
+  const correctCount = done.filter(b => b.correct).length;
+  const pct = Math.round(correctCount / SET.length * 100);
+  let label = "もうひといき！", cls = "fail";
+  if(pct >= 90){ label = "👑 S級！"; cls = "sclass"; } else if(pct >= 70){ label = "🎉 合格ライン突破！"; cls = "pass"; }
+  const wrongs = done.filter(b => !b.correct);
+  r = document.createElement("article");
+  r.className = "qblock"; r.id = "result-block";
+  r.innerHTML = `
+    <div class="qhead"><span class="qno">結果</span><span class="scene">${mode === "all" ? "30問通し" : "第" + curPart + "部"}</span></div>
+    <div class="qbody">
+      <div class="result-label ${cls}">${label}</div>
+      <div class="result-score"><span class="big">${score}</span><span style="font-size:17px; color:var(--sub);"> pt</span></div>
+      <div style="text-align:center; font-size:14px; color:var(--sub);">正解 ${correctCount} / ${SET.length} 問（${pct}%）</div>
+      <div class="passline"><div class="fill" style="width:0%;"></div>
+        <div class="mark" style="left:70%;"></div><div class="mlabel" style="left:70%;">合格ライン70%</div>
+        <div class="mark" style="left:90%;"></div><div class="mlabel" style="left:90%; top:-19px;">S級90%</div></div>
+      ${wrongs.length ? `<div class="stephead" style="margin-top:6px;">📝 まちがえた問題</div>` + wrongs.map(b => `
+        <div class="wrong-item"><b>No.${ITEMS.indexOf(b.item) + 1}</b> <span class="en">${esc(b.item.q)}</span><br>
+        正解：<b class="en">${b.item.ans + 1}. ${esc(b.item.choices[b.item.ans])}</b><br>
+        <button class="linkbtn" type="button" data-i="${b.i}">解説とシャドーイングを開く ↑</button></div>`).join("") : ""}
+      <div class="sub" style="margin-top:10px;">💡 正解した問題も、上の見出し（No.○）をタップすると解説とシャドーイングが開きます。</div>
+      ${TRIAL ? `<button class="btn acc upsell-open" type="button" style="margin-top:14px;">🔓 残りの問題を解く（有料版）</button>` : ""}
+      ${mode !== "all" ? `<button class="btn ghost" id="replay-all" type="button" style="margin-top:12px;">🎧 今のパートを通しでもう一度聞く</button>` : ""}
+      <button class="btn" id="retry-btn" type="button" style="margin-top:10px;">同じ問題をもう一度</button>
+      <button class="btn ghost" id="pick-btn" type="button" style="margin-top:10px;">問題を選ぶ</button>
+    </div>`;
+  feed.appendChild(r);
+  setTimeout(() => { r.querySelector(".fill").style.width = pct + "%"; }, 100);
+  if(pct >= 70) confetti(pct >= 90);
+  r.querySelectorAll(".linkbtn[data-i]").forEach(x => x.addEventListener("click", () => {
+    const b = blocks[Number(x.dataset.i)];
+    b.el.classList.add("open");
+    const s = renderExplain(b);
+    s.scrollIntoView({ behavior: "smooth", block: "start" });
+  }));
+  const up = r.querySelector(".upsell-open"); if(up) up.addEventListener("click", showUpsell);
+  const ra = $("replay-all");
+  if(ra) ra.addEventListener("click", () => playList(SET.map(it => ({ file: it.audio, btn: ra })), { gap: false, rate: 1 }));
+  $("retry-btn").addEventListener("click", () => startSet(mode, SET.slice()));
+  $("pick-btn").addEventListener("click", () => showPicker(mode === "all" ? 1 : curPart));
+  r.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// ============ スタート・ピッカー ============
+document.querySelectorAll(".partbtn").forEach(btn => btn.addEventListener("click", () => {
+  const p = btn.dataset.part;
+  if(p === "all"){
+    if(TRIAL){ showUpsell(); return; }
+    curPart = 0; startSet("all", ITEMS.slice());
+  } else showPicker(Number(p));
+}));
+
+function partItems(part){ return ITEMS.filter(x => x.part === part); }
+function showPicker(part){
+  Player.stop();
+  curPart = part;
+  $("picker-title").textContent = part === 1 ? "第1部（No.1〜15）会話" : "第2部（No.16〜30）説明文";
+  const grid = $("picker-grid"); grid.innerHTML = "";
+  partItems(part).forEach(item => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "pickbtn" + (item.locked ? " locked" : "");
+    b.textContent = (item.locked ? "🔒" : "") + (ITEMS.indexOf(item) + 1);
+    b.addEventListener("click", () => {
+      if(item.locked){ showUpsell(); return; }
+      const open = partItems(part).filter(x => !x.locked);
+      startSet("part", open.slice(open.indexOf(item)));
+    });
+    grid.appendChild(b);
+  });
+  hideViews(); $("prog").classList.add("hidden");
+  $("picker-view").classList.remove("hidden");
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+$("picker-all-btn").addEventListener("click", () => startSet("part", partItems(curPart).filter(x => !x.locked)));
+$("picker-back-btn").addEventListener("click", goHome);
+
+// ============ ホーム ============
+function goHome(){
+  Player.stop(); blocks.forEach(b => b && clearInterval(b.timer));
+  hideViews(); $("prog").classList.add("hidden");
+  feed.innerHTML = ""; blocks = []; reviewing = false;
+  $("start-view").classList.remove("hidden");
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+$("home-btn").addEventListener("click", () => {
+  const inQuiz = !feed.classList.contains("hidden") && !$("result-block") && blocks.some(b => b && b.answered);
+  if(inQuiz){ holdOn(); $("ask").classList.remove("hidden"); } else goHome();
+});
+$("ask-no").addEventListener("click", () => { $("ask").classList.add("hidden"); holdOff(); });
+$("ask-yes").addEventListener("click", () => { $("ask").classList.add("hidden"); holdTimer = false; heldAudio = false; goHome(); });
+
+// ============ 虎の巻（いつでも） ============
+function holdOn(){ if(!holdTimer){ holdTimer = true; heldAudio = Player.hold(); } }
+function holdOff(){ if(holdTimer){ holdTimer = false; if(heldAudio) Player.resume(); heldAudio = false; } }
+function openTora(){ holdOn(); $("tora-sheet").classList.remove("hidden"); document.body.style.overflow = "hidden"; }
+function closeTora(){ $("tora-sheet").classList.add("hidden"); document.body.style.overflow = ""; holdOff(); }
+$("tora-btn").addEventListener("click", openTora);
+$("tora-close").addEventListener("click", closeTora);
+$("tora-sheet").addEventListener("click", e => { if(e.target.id === "tora-sheet") closeTora(); });
+
+// ============ 紙吹雪 ============
+function confetti(gold){
+  const colors = gold ? ["#d4a017", "#f2c94c", "#fff2b3", "#fff"] : ["#1e3a5f", "#2f5d8f", "#f28c28", "#1f9d55", "#ffe3c4"];
+  for(let i = 0; i < 70; i++){
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random() * 100 + "vw";
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animation = `fall ${2.2 + Math.random() * 2}s linear ${Math.random() * 1.2}s forwards`;
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 6000);
+  }
+}
+
+// ============ お試し版／有料版 ============
+const upsell = $("upsell");
+function showUpsell(){ if(upsell) upsell.classList.remove("hidden"); }
+if(upsell){
+  const buy = $("upsell-buy");
+  if(NOTE_URL){ buy.href = NOTE_URL; }
+  else { buy.removeAttribute("href"); buy.textContent = "有料版は準備中です（もうすぐ公開）"; buy.style.background = "#94a3b8"; }
+  $("upsell-close").addEventListener("click", () => upsell.classList.add("hidden"));
+}
+
+// ============ 使い方の案内（チュートリアル）2026-11-21 まっさん「アプリの使い方を能動的に教えて」 ============
+// 第1部の最初の問題を本当に解きながら、光っている所を自分で押して進む。読むだけの所は「OK」で進む。
+// はじめて開いたときだけ自動で声をかける（localStorage）。❓ と 🔰 でいつでももう一度。
+const Tut = (() => {
+  const KEY = "qup-eiken2-listening-tut-v1";
+  const C = $("coach"), blks = C.querySelectorAll(".blk"), ring = C.querySelector(".ring"), bub = C.querySelector(".bub");
+  let steps = [], k = 0, raf = 0, poll = 0, active = false, curT = null, offSince = 0, lastFix = 0, fullMsg = "";
+  const B = () => blocks[0];
+  const q = sel => () => B() && B().el.querySelector(sel);
+  function place(t){
+    const W = innerWidth, H = innerHeight;
+    if(!t){ blks[0].style.cssText = `left:0;top:0;width:${W}px;height:${H}px`; for(let i = 1; i < 4; i++) blks[i].style.cssText = "display:none"; ring.style.display = "none"; bub.style.top = "auto"; bub.style.bottom = "auto"; bub.style.top = Math.max(70, H / 2 - bub.offsetHeight / 2) + "px"; return; }
+    const r = t.getBoundingClientRect(), m = 6;
+    const L = Math.max(0, r.left - m), T = Math.max(0, r.top - m), Rr = Math.min(W, r.right + m), Bt = Math.min(H, r.bottom + m);
+    blks[0].style.cssText = `left:0;top:0;width:${W}px;height:${T}px`;
+    blks[1].style.cssText = `left:0;top:${Bt}px;width:${W}px;height:${Math.max(0, H - Bt)}px`;
+    blks[2].style.cssText = `left:0;top:${T}px;width:${L}px;height:${Math.max(0, Bt - T)}px`;
+    blks[3].style.cssText = `left:${Rr}px;top:${T}px;width:${Math.max(0, W - Rr)}px;height:${Math.max(0, Bt - T)}px`;
+    ring.style.cssText = `display:block;left:${L}px;top:${T}px;width:${Rr - L}px;height:${Bt - T}px`;
+    // ふきだしは、光っている所と重ならない側に出す
+    const bh = bub.offsetHeight, below = H - Bt, above = T;
+    if(below >= bh + 16){ bub.style.top = (Bt + 10) + "px"; bub.style.bottom = "auto"; return false; }
+    if(above >= bh + 76){ bub.style.top = Math.max(64, T - bh - 10) + "px"; bub.style.bottom = "auto"; return false; }
+    bub.style.top = "auto"; bub.style.bottom = "10px";
+    return { T, Bt, bh };
+  }
+  function loop(){
+    if(!active) return;
+    const st = steps[k];
+    const t = st.target ? st.target() : null;
+    if(t !== curT){ curT = t; if(t && st.scroll !== false) t.scrollIntoView({ behavior: "smooth", block: st.block || "center" }); }
+    // 虎の巻を開いている間は、ふきだしごと下がる（虎の巻のシートが上に来る）
+    C.style.visibility = (st.hideWhile && st.hideWhile()) ? "hidden" : "visible";
+    const mini = !!(st.mini && innerHeight <= 520);
+    if(mini !== bub.classList.contains("mini")){ bub.classList.toggle("mini", mini); bub.querySelector(".msg").innerHTML = mini ? st.mini : fullMsg; }
+    const ov = place(t);
+    const now = performance.now();
+    if(t && st.scroll !== false && C.style.visibility !== "hidden"){
+      const r = t.getBoundingClientRect(), H = innerHeight;
+      const off = r.height === 0 || r.bottom < 72 || r.top > H - 24;
+      if(off){ if(!offSince) offSince = now; }
+      else offSince = 0;
+      if(off && now - offSince > 700 && now - lastFix > 1200){ t.scrollIntoView({ behavior: "smooth", block: "center" }); lastFix = now; offSince = 0; }
+      else if(!off && ov && now - lastFix > 1200){
+        // 下にふきだしを置く場所を作る（光の高さ＋ふきだしが画面に入るときだけ）
+        const need = (ov.Bt - ov.T) + ov.bh + 90;
+        if(need <= H && ov.T > 76){ window.scrollBy({ top: ov.T - 70, behavior: "smooth" }); lastFix = now; }
+      }
+    }
+    raf = requestAnimationFrame(loop);
+  }
+  function show(i){
+    k = i; curT = null;
+    const st = steps[k];
+    bub.querySelector(".step").textContent = st.label || `${k + 1} / ${steps.length}`;
+    fullMsg = (st.until ? `<span class="do">👆 やってみよう</span><br>` : "") + st.msg;
+    bub.classList.remove("mini");
+    bub.querySelector(".msg").innerHTML = fullMsg;
+    const row = bub.querySelector(".row"); row.innerHTML = "";
+    (st.buttons || (st.until ? [] : [["OK ▶", () => next()]])).forEach(([label, fn, ghost]) => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "btn" + (ghost ? " ghost" : ""); b.textContent = label;
+      b.addEventListener("click", fn); row.appendChild(b);
+    });
+    const qt = document.createElement("button"); qt.type = "button"; qt.className = "quit"; qt.textContent = "案内をやめる"; qt.addEventListener("click", () => end(true)); row.appendChild(qt);
+    if(st.enter) st.enter();
+    clearInterval(poll);
+    if(st.until) poll = setInterval(() => { if(!active) return clearInterval(poll); if(st.until()){ clearInterval(poll); setTimeout(next, st.wait || 500); } }, 150);
+  }
+  function next(){ if(k + 1 < steps.length) show(k + 1); else end(true); }
+  function end(done){
+    active = false; cancelAnimationFrame(raf); clearInterval(poll);
+    C.classList.add("hidden"); C.style.visibility = ""; document.body.classList.remove("tut-on");
+    if(done) try{ localStorage.setItem(KEY, "1"); }catch(e){}
+  }
+  // 光っていない所を押したら、ふきだしを揺らして知らせる
+  blks.forEach(x => x.addEventListener("click", () => { bub.classList.remove("shake"); void bub.offsetWidth; bub.classList.add("shake"); }));
+  addEventListener("resize", () => { if(active){ curT = null; offSince = 0; lastFix = 0; } }); // 回転したら、光っている所を画面に入れ直す
+
+  function build(){
+    const P1 = partItems(1).filter(x => !x.locked);
+    return [
+      { msg: "Hi! エリーです。<br>1問だけ、<b>実際に解きながら</b>使い方を覚えよう。<br>オレンジに光っている所を、自分で押して進んでね。", buttons: [["はじめる ▶", () => { curPart = 1; startSet("part", P1.slice()); show(1); }]], label: "使い方の案内" },
+      { target: q(".choices"), msg: "英検のリスニングは、<b>聞く前に選択肢を読む</b>のが基本。<br>何について聞かれそうか、4つにざっと目を通そう。読めたら OK。" },
+      { target: () => { const b = B(); if(!b) return null; const w = b.el.querySelector(".audiowarn"); return (w && !w.classList.contains("hidden")) ? w : b.el.querySelector(".playbtn"); },
+        msg: "▶ を押して聞こう。<b>英文は本番と同じで1回だけ</b>。質問は最後に読まれるよ。<br>（音が出ないときは「音声なしで答える」）", until: () => B() && B().played, wait: 300 },
+      { target: q(".ans-area"), msg: "聞き終わったら <b>10秒以内</b>に番号をタップ。<br>わからなければ「わからない」でもOK。まちがえても大丈夫！", mini: "👆 聞き終わったら<b>10秒以内</b>に番号をタップ", until: () => B() && B().answered, block: "start" },
+      { target: q(".qbox"), msg: "答えるとすぐ<b>解説</b>。一番上に<b>質問と選択肢</b>（✅が正解）。<br>その下の <b>⚠️ ひっかけ</b>で、ほかの選択肢がちがう理由を確かめよう。", mini: "解説：<b>質問と選択肢</b>（✅が正解）と <b>⚠️ ひっかけ</b>を読もう", block: "start" },
+      { target: q(".qsound"), msg: "質問は本番では1回だけ。ここなら<b>何回でも</b>聞けるよ。🔊 を押してみて。", until: () => { const x = q(".qsound")(); return x && x.dataset.tut === "1"; }, enter(){ const x = q(".qsound")(); if(x) x.addEventListener("click", () => { x.dataset.tut = "1"; }, { once: true }); } },
+      { target: q(".units.ex .unit"), msg: "スクリプトは<b>流れた順</b>。色の下線が聞き取りのポイントで、文の下に説明があるよ。<br>左の ▶ で<b>1文ずつ</b>聞ける。押してみて。", block: "start",
+        until: () => { const x = q(".units.ex .unit .sbtn")(); return x && x.dataset.tut === "1"; }, enter(){ const x = q(".units.ex .unit .sbtn")(); if(x) x.addEventListener("click", () => { x.dataset.tut = "1"; }, { once: true }); } },
+      { target: q(".shbtn"), msg: "聞いて分かったら、次は<b>声に出す</b>練習。<br>「🗣 シャドーイングで練習」を押そう。", until: () => B() && B().shadowed },
+      { target: q(".s-sh .ctrls"), msg: "速さ・くり返し・英文をかくす が選べるよ。<br>ためしに<b>「ゆっくり」</b>を押してみて。", block: "start", until: () => shRate === 0.8, wait: 400 },
+      { target: q(".units.sh .unit"), msg: "▶ で1文聞いたら、<b>すぐ同じリズムで声に出す</b>！ これがシャドーイング。<br>▶ を押して、声に出してみよう。",
+        until: () => { const x = q(".units.sh .unit .sbtn")(); return x && x.dataset.tut === "1"; }, wait: 1200, enter(){ const x = q(".units.sh .unit .sbtn")(); if(x) x.addEventListener("click", () => { x.dataset.tut = "1"; }, { once: true }); } },
+      { target: q(".s-sh .go"), msg: "「▶ 通しで練習」は、1文ごとに<b>声に出す間</b>をあけて最後まで流れるよ。家で声を出せるときに使ってね。<br>（ゆっくり・3回はここだけ。本番の▶はいつもふつうの速さ）" },
+      { target: () => $("tora-btn"), msg: "<b>📜 虎の巻</b>（聞き取りのコツ）は、どの画面からでも開ける。押して開いてみよう。", scroll: false,
+        until: () => !$("tora-sheet").classList.contains("hidden"), wait: 200 },
+      { target: () => $("tora-close"), msg: "", scroll: false, hideWhile: () => !$("tora-sheet").classList.contains("hidden"), until: () => $("tora-sheet").classList.contains("hidden"), wait: 200, label: "" },
+      { target: q(".s-sh .nextbtn"), msg: "最後に「次の問題へ」。この問題は1行にたたまれて、<b>下に次の問題</b>が出てくるよ。<br>（見出しをタップすれば、また開ける）", until: () => !!blocks[1], wait: 900 },
+      { target: () => blocks[1] && blocks[1].el.querySelector(".qhead"), msg: "これで使い方はおしまい！ あとは同じ流れで進めよう。<br>🏠 でホーム、<b>❓ でいつでもこの案内</b>。<br>Let's go!", buttons: [["このまま No.2 へ ▶", () => end(true)]], label: "おしまい" },
+    ];
+  }
+  function start(){
+    if(active) return;
+    Player.stop(); goHome();
+    steps = build(); active = true; C.classList.remove("hidden"); C.style.visibility = ""; document.body.classList.add("tut-on");
+    show(0); loop();
+  }
+  return { start, end, firstTime: () => { try{ return !localStorage.getItem(KEY); }catch(e){ return false; } }, get active(){ return active; } };
+})();
+$("tut-start").addEventListener("click", () => Tut.start());
+$("help-btn").addEventListener("click", () => {
+  const inQuiz = !feed.classList.contains("hidden") && !$("result-block") && blocks.some(b => b && b.answered);
+  if(inQuiz && !confirm("使い方の案内を始めますか？（とちゅうの点数は消えます）")) return;
+  Tut.start();
+});
+if(Tut.firstTime() && !/[?&]notut\b/.test(location.search)) setTimeout(() => Tut.start(), 600);
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){ navigator.serviceWorker.register("sw.js").catch(() => {}); }
+</script>
+</body>
+</html>
